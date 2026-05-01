@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %} Skopje Parking App{% endblock %}
+
+{% block content %}
+    <h2>Welcome</h2>
+
+    <p>
+        <a href="{{ url_for('pages.signup_page') }}">Sign Up</a>
+    </p>
+
+    <p>
+        <a href="{{ url_for('pages.login_page') }}">Log In</a>
+    </p>
+{% endblock %}
