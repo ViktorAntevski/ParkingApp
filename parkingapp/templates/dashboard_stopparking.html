@@ -1,0 +1,77 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Welcome, {{ user.username }}</h2>
+
+    <p>Insert your vehicle registration plates:</p>
+
+    <label>
+        Vehicle Registration Plates<br>
+        <input type="text" id="plates" required>
+    </label><br><br>
+
+    <button type="button" onclick="submit()">Stop Parking</button>
+    <p id="error" style="color: red; font-weight: bold;"></p>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const msg = sessionStorage.getItem("toast");
+
+  if (msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+      sessionStorage.removeItem("toast");
+    }, 3000); // 3 seconds
+  }
+});
+
+function submit() {
+  const plates = document.getElementById("plates").value.trim().toUpperCase();
+  const errorEl = document.getElementById("error");
+
+
+ if (!plates) {
+    errorEl.innerText = "Please fill in all fields.";
+    return;
+    }
+
+  fetch("/stop-hourly-parking", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      plates: plates
+    })
+  })
+
+.then(async response => {
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      // backend returned no JSON body (OK case)
+    }
+
+ if (!response.ok) {
+      errorEl.innerText = data.message || "Failed to stop parking.";
+      return;
+      }
+    sessionStorage.setItem("toast", data.message);
+    window.location.href = "/dashboard";
+    })
+.catch(err => {
+    console.error(err);
+    errorEl.innerText = "Server error. Please try again.";
+  });
+}
+
+</script>
+{% endblock %}

@@ -2,6 +2,8 @@ from parkingapp import db
 from flask_login import UserMixin
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from parkingapp import bcrypt
+import tzdata
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 
@@ -38,11 +40,11 @@ class ActiveRegistrationPlate(db.Model):
     fined = db.Column(db.Boolean, default=False)
 
 #ShortTerm  metering - which user, how much hours should be billed
-class ShortTermParking(db.Model):
+class HourlyParkingInvoice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
     check_in = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
-    provider = db.Column(db.String(50), nullable=False)
+
 
 
 # Monthly subs - once a user is written in this table, only payed_for_month=True/False is updated monthly
@@ -69,5 +71,13 @@ class Operator(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
+
+#class ParkingZones(db.Model):
+    #__tablename__ = "zones"
+   # id = db.Column(db.Integer, primary_key=True)
+   # zone = db.Column(db.String(20), unique=True, nullable=False)
+   # rate = db.Column(db.Integer(20), unique=True, nullable=False)
+#zones = ["Z1": ,"Z2": ]
+
 
 #class GuestCard(db.Model):

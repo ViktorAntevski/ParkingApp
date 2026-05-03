@@ -1,0 +1,79 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Welcome, {{ user.username }}</h2>
+
+    <p>Provide us with your vehicles registration plates in the format "sk1234aa" or "SK1234AA" and the parking zone in the format "z1" or "Z1":</p>
+
+    <label>
+      Parking Zone<br>
+      <input type="text" id="parking_zone" required>
+    </label><br><br>
+
+    <label>
+        Vehicle Registration Plates<br>
+        <input type="text" id="plates" required>
+    </label><br><br>
+
+    <button type="button" onclick="submit()">Start Parking</button>
+    <p id="error" style="color: red; font-weight: bold;"></p>
+<p>*Please acknowledge that you are responsible for providing the required information correctly</p>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const msg = sessionStorage.getItem("toast");
+
+  if (msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+      sessionStorage.removeItem("toast");
+    }, 3000); // 3 seconds
+  }
+});
+
+function submit() {
+  const parking_zone = document.getElementById("parking_zone").value.trim().toUpperCase();
+  const plates = document.getElementById("plates").value.trim().toUpperCase();
+  const errorEl = document.getElementById("error");
+
+
+ if (!parking_zone || !plates) {
+    errorEl.innerText = "Please fill in all fields.";
+    return;
+    }
+
+  fetch("/hourly-parking", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      parking_zone: parking_zone,
+      plates: plates
+    })
+  })
+  .then(async response => {
+    const data = await response.json();
+
+
+ if (!response.ok) {
+      errorEl.innerText = data.message || "Failed to start parking.";
+      return;
+      }
+    sessionStorage.setItem("toast", data.message);
+    window.location.href = "/dashboard";
+    })
+.catch(err => {
+    console.error(err);
+    errorEl.innerText = "Server error. Please try again.";
+  });
+}
+
+</script>
+{% endblock %}

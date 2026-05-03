@@ -1,0 +1,32 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Zone</th>
+      <th>Price per hour</th>
+      <th>Price per month</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for price in prices %}
+    <tr>
+      <td>{{ price.zone }}</td>
+      <td>{{ price.h_rate }} MKD</td>
+        <td>
+        {{ price.m_rate }} MKD
+</td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+{% endblock %}

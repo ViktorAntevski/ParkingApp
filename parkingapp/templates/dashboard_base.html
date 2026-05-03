@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Skopje Parking App{% endblock %}</title>
+
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .user-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        main {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOAST (global, hidden by default) -->
+    <div id="toast"
+         style="
+           position: fixed;
+           top: 20px;
+           left: 50%;
+           transform: translateX(-50%);
+           background: #2ecc71;
+           color: white;
+           padding: 12px 20px;
+           border-radius: 6px;
+           display: none;
+           z-index: 9999;">
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <!-- Left side -->
+        <h1>Parking App</h1>
+
+        <!-- Right side -->
+        <div class="user-bar">
+            <span>
+                Logged in as <strong>{{ current_user.username }}</strong>
+            </span>
+            <button onclick="logout()">Log out</button>
+        </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- LOGOUT SCRIPT (frontend only for now) -->
+    <script>
+        function logout() {
+            fetch("/logout", {
+                method: "POST"
+            })
+            .then(response => {
+                if (response.ok) {
+
+                localStorage.removeItem("user_id");
+                localStorage.removeItem("username");
+
+                    window.location.href = "/";
+                } else {
+                    alert("Logout failed");
+                }
+            })
+            .catch(err => {
+                console.error("Logout error:", err);
+                alert("Server error during logout");
+            });
+        }
+    </script>
+
+</body>
+</html>
