@@ -163,7 +163,9 @@ class StopHourlyParking(Resource):
         if h_rate is None:
             return {"message": "Invalid parking zone for billing"}, 500
 
-        total_invoice = int(h_rate)*total_hours
+        if total_hours == 0:
+            total_hours = 1
+        total_invoice = (h_rate) * total_hours
 
         try:
             db.session.delete(active)
@@ -175,7 +177,7 @@ class StopHourlyParking(Resource):
             return {"message": "Failed to stop parking"}, 500
 
         return {
-        "message": "Parking stopped successfully"
+        "message": f"Parking stopped successfully, The total cost of the parking service is {total_invoice} denars"
     }, 201
 
 class MonthlySubs(Resource):
