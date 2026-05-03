@@ -34,7 +34,9 @@
 </label><br><br>
 
 <button onclick="signUp()">Sign Up</button>
+{% endblock %}
 
+{% block scripts %}
 <script>
 function signUp() {
   fetch("/signup", {

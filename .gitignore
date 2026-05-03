@@ -19,3 +19,6 @@ migrations/
 # Ignore IDE/project settings
 .vscode/
 .idea/
+
+.env
+.env.*
