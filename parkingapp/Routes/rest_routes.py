@@ -29,20 +29,26 @@ class UserSignUp(Resource):
     def post(self):
         args = add_user.parse_args()
         password = args["password"].strip()
+        username = args["username"].strip()
+        email = args["email_address"].strip()
 
-        if User.query.filter_by(username=args['username']).first():
+        if User.query.filter_by(username=username).first():
             return {'message': 'Username already taken'}, 400
-        if User.query.filter_by(email_address=args['email_address']).first():
+        if User.query.filter_by(email_address=email).first():
             return {'message': 'Email already taken'}, 400
-        if len(password) < 8:
-            return {'message': 'Passwords should be at least 8 characters long'}, 400
+        if len(password) < 12 or len(password) > 30:
+            return {'message': 'Passwords should be between 12 and 30 characters long'}, 400
+        if len(username) < 4 or len(username) > 30:
+            return {'message': 'Username length should be between 4 and 30 characters long'}, 400
+        if "@" not in email:
+            return {'message': 'Please enter a valid e-mail address'}, 400
         user = User(
             username = args["username"].strip(), name_surname = args["name_surname"].strip(), address = args["address"].strip(),
             email_address = args["email_address"].strip().lower(), ID_card = args["ID_card"], phone_number =args["phone_number"]
         )
         user.set_password(args["password"])
         db.session.add(user)
-        print("Reached commit")
+        print("User added to db")
         db.session.commit()
         return {"message": "User created successfully", "id": user.id}, 201
 
