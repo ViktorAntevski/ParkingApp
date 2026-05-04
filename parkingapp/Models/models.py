@@ -12,11 +12,11 @@ class User(db.Model, UserMixin):
     __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
-    password_hash = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(100), nullable=False)
     name_surname = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
-    email_address = db.Column(db.String(50), nullable=False)
+    email_address = db.Column(db.String(50), unique=True, nullable=False)
     ID_card = db.Column(db.String(20), nullable=False)
 
     def set_password(self, password):
