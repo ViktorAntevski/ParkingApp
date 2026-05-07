@@ -11,13 +11,14 @@ Skopje_TZ = ZoneInfo("Europe/Skopje")
 class User(db.Model, UserMixin):
     __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
     name_surname = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
     email_address = db.Column(db.String(50), unique=True, nullable=False)
     ID_card = db.Column(db.String(20), nullable=False)
+    is_verified = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -28,6 +29,11 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'<{User}: {self.username}>'
 
+class EmailVerification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id= db.Column(db.Integer, db.ForeignKey("User.id"))
+    token = db.Column(db.String(44), nullable=False)
+    expires_at = db.Column(db.DateTime, nullabl=False)
 
 #base class: Registration Plates, Parking Operator queries here, these are the common attributes of all types of services,
 # if not in table -> car should be fined

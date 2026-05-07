@@ -5,9 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user,logout_user,current_user,login_required
 from parkingapp import db
 from parkingapp.price_list import ZONE_RATES
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import tzdata
+import secrets
+from flask_mail import Message
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
@@ -50,7 +52,9 @@ class UserSignUp(Resource):
         db.session.add(user)
         print("User added to db")
         db.session.commit()
-        return {"message": "User created successfully", "id": user.id}, 201
+        token = secrets.token_urlsafe(32)
+        verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow()+timedelta(hours=24))
+        return {"message": "A verification link has been sent to your e-mail", "id": user.id}, 201
 
 
 #LogIn
@@ -66,13 +70,13 @@ class UserLogin(Resource):
 
         if not user or not user.check_password(args["password"]):
             return {"message": "Invalid username or password"}, 401
-
         login_user(user)
 
         return {
             "message": "Login successful",
             "user_id": user.id,
-            "username": user.username
+            "username": user.username,
+            "is_verified":user.is_verified
         }, 200
 
 
