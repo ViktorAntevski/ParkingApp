@@ -17,3 +17,22 @@
         <a href="{{ url_for('pages.operator_login') }}">Operator Log In</a>
     </p>
 {% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const msg = sessionStorage.getItem("toast");
+
+  if (msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+      sessionStorage.removeItem("toast");
+    }, 3000); // 3 seconds
+  }
+});
+</script>
+{% endblock %}

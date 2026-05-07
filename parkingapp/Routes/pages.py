@@ -19,10 +19,15 @@ def login_page():
         return redirect(url_for("pages.dashboard"))
     return render_template("login.html")
 
+@pages.route("/verify-required", methods=["GET"])
+def verify():
+    return render_template("verify.html")
+
 @pages.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("dashboard.html", user=current_user)
+
 
 @pages.route("/dashboard/hourly-parking")
 @login_required

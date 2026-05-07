@@ -54,9 +54,22 @@ function signUp() {
       ID_card: document.getElementById("ID_card").value
     })
   })
-  .then(res => res.json())
-  .then(data => alert(data.message))
-  .catch(err => console.error(err));
-}
+  .then(res => {return res.json().then(data => ({data, res}));
+  })
+  .then(({res,data}) => {
+    if (res.ok) {
+      sessionStorage.setItem("toast", data.message);
+      window.location.href = "/";
+      document.getElementById("error").innerText = data.message;
+    }
+      else {
+      alert(data.message);
+    }
+  })
+  .catch(err => {
+  document.getElementById("error").innerText = "Server error";
+  console.error(err);
+  });
+  }
 </script>
 {% endblock %}
