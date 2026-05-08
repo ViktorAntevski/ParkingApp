@@ -33,7 +33,7 @@ class EmailVerification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("User.id"))
     token = db.Column(db.String(44), nullable=False)
-    expires_at = db.Column(db.DateTime, nullabl=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
 
 #base class: Registration Plates, Parking Operator queries here, these are the common attributes of all types of services,
 # if not in table -> car should be fined
