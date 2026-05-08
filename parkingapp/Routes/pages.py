@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, url_for, request, redirect , abort
 from flask_login import login_required, current_user
 from parkingapp.price_list import ZONE_RATES
+from datetime import datetime
+from parkingapp.Models.models import EmailVerification, User
+from parkingapp import db
 
 
 pages = Blueprint("pages", __name__)
@@ -21,6 +24,29 @@ def login_page():
 
 @pages.route("/verify-required", methods=["GET"])
 def verify():
+    return render_template("verify.html")
+
+@pages.route("/verify-email", methods=["GET"])
+def verify_email():
+    token=request.args.get("token")
+
+    if not token:
+        return {"message":"Missing token"}
+
+    token_record = EmailVerification.query.filter_by(token=token).first()
+    if not token_record:
+        return {"message":"Invalid token"}
+    if token_record.expires_at < datetime.now:
+        return {"message":"Token expired"}
+    user = User.query.get(token_record.user_id).first()
+    user.is_verified = True
+
+    db.session.delete(token_record)
+    db.session.commit()
+
+    return {"message": "Email verified successfully!"}
+
+
     return render_template("verify.html")
 
 @pages.route("/dashboard")

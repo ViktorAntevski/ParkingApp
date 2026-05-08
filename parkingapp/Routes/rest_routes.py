@@ -10,12 +10,40 @@ from zoneinfo import ZoneInfo
 import tzdata
 import secrets
 from flask_mail import Message
+from parkingapp.extensions import mail
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
+
+
+def send_email(to_email, token):
+    verification_link = f"http://localhost:5000/verify-email?token={token}"
+
+    msg = Message(
+        subject="Verify your email",
+        recipients=[vantevski1@gmail.com]
+    )
+
+    msg.body = f"""
+Hi,
+
+Please click the link below to verify your account:
+
+{verification_link}
+
+If you did not sign up, you can ignore this email.
+
+Best regards,
+ParkingApp Team
+"""
+
+    mail.send(msg)
+
+
+
 
 #SignUp
 add_user = reqparse.RequestParser()
@@ -54,6 +82,9 @@ class UserSignUp(Resource):
         db.session.commit()
         token = secrets.token_urlsafe(32)
         verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow()+timedelta(hours=24))
+        send_email(user.email_address, token)
+
+
         return {"message": "A verification link has been sent to your e-mail", "id": user.id}, 201
 
 
