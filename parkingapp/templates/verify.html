@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} Skopje Parking App{% endblock %}
+
+{% block content %}
+    <h2>Welcome</h2>
+
+    <p>
+        <button onclick="resend()">Resend link</button>
+    </p>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function resend () {
+    fetch ("/verification-resend",{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+    email: localStorage.getItem("email")
+    })
+    )};
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const msg = sessionStorage.getItem("toast");
+
+  if (msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.display = "block";
+
+    setTimeout(() => {
+      toast.style.display = "none";
+      sessionStorage.removeItem("toast");
+    }, 3000); // 3 seconds
+  }
+});
+</script>
+{% endblock %}
