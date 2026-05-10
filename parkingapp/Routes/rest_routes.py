@@ -1,5 +1,5 @@
 from flask import Flask, url_for, redirect, Blueprint, request
-from parkingapp.Models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice
+from parkingapp.Models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice, EmailVerification
 from flask_restful import Resource,Api, marshal_with, fields, reqparse, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user,logout_user,current_user,login_required
@@ -24,7 +24,8 @@ def send_email(to_email, token):
 
     msg = Message(
         subject="Verify your email",
-        recipients=[vantevski1@gmail.com]
+        sender = "vantevski1@gmail.com",
+        recipients=[to_email]
     )
 
     msg.body = f"""
@@ -82,10 +83,12 @@ class UserSignUp(Resource):
         db.session.commit()
         token = secrets.token_urlsafe(32)
         verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow()+timedelta(hours=24))
+        db.session.add(verification)
+        db.session.commit()
         send_email(user.email_address, token)
 
 
-        return {"message": "A verification link has been sent to your e-mail", "id": user.id}, 201
+        return {"message": "A verification link has been sent to your e-mail", "id": user.id, "email":user.email_address}, 201
 
 
 #LogIn
