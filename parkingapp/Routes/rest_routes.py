@@ -56,6 +56,7 @@ add_user.add_argument("phone_number", type=str, help="", required = True, locati
 add_user.add_argument("email_address", type=str, help="", required = True, location="json")
 add_user.add_argument("ID_card", type=str, help="", required = True, location="json")
 
+
 class UserSignUp(Resource):
     def post(self):
         args = add_user.parse_args()
@@ -88,7 +89,7 @@ class UserSignUp(Resource):
         send_email(user.email_address, token)
 
 
-        return {"message": "A verification link has been sent to your e-mail", "id": user.id, "email":user.email_address}, 201
+        return {"message": "A verification link has been sent to your e-mail", "user_id": user.id, "email":user.email_address}, 201
 
 
 #LogIn
@@ -112,7 +113,6 @@ class UserLogin(Resource):
             "username": user.username,
             "is_verified":user.is_verified
         }, 200
-
 
 class UserLogout(Resource):
     method_decorators = [login_required]
