@@ -9,23 +9,23 @@
     <p>Select a service:</p>
 
 
-<a href="{{ url_for('dashboard.hourly_parking') }}">
+<a href="{{ url_for('/dashboard.hourly_parking') }}">
     <button>Hourly parking</button>
 </a><br><br>
 
-<a href="{{ url_for('dashboard.subscribe_monthly') }}">
+<a href="{{ url_for('/dashboard.subscribe_monthly') }}">
     <button>Subscribe monthly</button>
 </a><br><br>
 
-<a href="{{ url_for('dashboard.reg_for_res') }}">
+<a href="{{ url_for('/dashboard.reg_for_res') }}">
     <button>Register a resident vehicle</button>
 </a><br><br>
 
-<a href="{{ url_for('dashboard.price_list') }}">
+<a href="{{ url_for('/dashboard.price_list') }}">
     <button>Service price list</button>
 </a><br><br>
 
-<a href="{{ url_for('dashboard.stop_parking') }}">
+<a href="{{ url_for('/dashboard.stop_parking') }}">
     <button>Stop Parking</button>
 </a><br><br>
 
@@ -40,7 +40,7 @@ window.addEventListener("load", () => {
 
   if (isVerified !== "true") {
     alert("Please verify your email to access this page");
-    window.location.href = "/verify-required";
+    window.location.href = "/verification-required";
   }
 });
 
@@ -56,8 +56,12 @@ window.addEventListener("load", () => {
     }, 3000); // 3 seconds
   }
 });
-</script>
+  const params = new URLSearchParams(window.location.search);
 
+  if (params.get("verified") === "true") {
+      alert("Email verified successfully!");
+
+</script>
 
 <script>
 function hourly_parking(){

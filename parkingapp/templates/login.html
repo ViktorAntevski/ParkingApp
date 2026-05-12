@@ -53,6 +53,7 @@ function login() {
     localStorage.setItem("is_verified", data.is_verified);
 
     window.location.href = "/dashboard";
+
   })
   .catch(err => {
     document.getElementById("error").innerText = "Server error";

@@ -20,6 +20,7 @@ def signup_page():
 
 @pages.route("/login", methods=["GET"])
 def login_page():
+    print(current_user)
     if current_user.is_authenticated:
         if current_user.is_verified:
             return redirect(url_for("dashboard.dashboard_menu"))
@@ -34,8 +35,9 @@ def verify():
 def resend():
     user_id = request.json.get("user")
     token = secrets.token_urlsafe(32)
+    print("user")
 
-    user = User.query.filter_by(user_id=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
     email = user.email_address
 
     verification = EmailVerification(
@@ -61,15 +63,15 @@ def verify_email():
     token_record = EmailVerification.query.filter_by(token=token).first()
     if not token_record:
         return {"message":"Invalid token"}
-    if token_record.expires_at < datetime.now:
+    if token_record.expires_at < datetime.now():
         return {"message":"Token expired"}
-    user = User.query.get(token_record.user_id).first()
+    user = User.query.get(token_record.user_id)
     user.is_verified = True
 
     db.session.delete(token_record)
     db.session.commit()
 
-    return {"message": "Email verified successfully!"}
+    return  redirect("/dashboard?verified=true")
 
 
     return render_template("verify.html")
