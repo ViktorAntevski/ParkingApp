@@ -88,7 +88,6 @@ class UserSignUp(Resource):
         db.session.commit()
         send_email(user.email_address, token)
 
-
         return {"message": "A verification link has been sent to your e-mail", "user_id": user.id, "email":user.email_address}, 201
 
 

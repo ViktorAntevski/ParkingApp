@@ -14,7 +14,7 @@ dashboard = Blueprint("/dashboard", __name__, url_prefix="/dashboard")
 def require_login():
     pass
 
-@dashboard.route("/")
+@dashboard.route("")
 def dashboard_menu():
     return render_template("dashboard.html", user=current_user)
 

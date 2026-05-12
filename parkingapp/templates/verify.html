@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
 {% block title %} Skopje Parking App{% endblock %}
 
@@ -8,21 +8,30 @@
     <p>
         <button onclick="resend()">Resend link</button>
     </p>
-
 {% endblock %}
+
 
 {% block scripts %}
 <script>
-    function resend () {
-    fetch ("/verification-resend",{
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-    user: localStorage.getItem("user_id")
-    })
-    )};
+    function resend() {
+        console.log("Resend Clicked");
+
+        fetch ("/verification-resend",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user: localStorage.getItem("user_id")
+            })
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message))
+        .catch(err => console.error(err));
+        localStorage.setItem("toast", data.message);
+        window.location.href = "/dashboard";
+    }
+
 
 
 
