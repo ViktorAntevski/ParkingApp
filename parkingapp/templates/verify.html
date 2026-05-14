@@ -6,6 +6,9 @@
     <h2>Welcome</h2>
 
     <p>
+        <label>Email:<br>
+  <input type="email" id="email_address">
+        </label><br><br>
         <button onclick="resend()">Resend link</button>
     </p>
 {% endblock %}
@@ -15,24 +18,20 @@
 <script>
     function resend() {
         console.log("Resend Clicked");
-
+        console.log(document.getElementById("email_address"));
         fetch ("/verification-resend",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            user: localStorage.getItem("user_id")
+            email: document.getElementById("email_address").value
             })
         })
         .then(res => res.json())
         .then(data => alert(data.message))
         .catch(err => console.error(err));
-        localStorage.setItem("toast", data.message);
-        window.location.href = "/dashboard";
     }
-
-
 
 
 document.addEventListener("DOMContentLoaded", () => {
