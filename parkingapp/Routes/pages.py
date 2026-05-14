@@ -33,21 +33,25 @@ def verify():
 
 @pages.route( "/verification-resend",methods=["POST"])
 def resend():
-    user_id = request.json.get("user")
+    email = request.json.get("email")
+    if not email or "@" not in email:
+        return {"message": "Please enter a valid e-mail"}, 400
     token = secrets.token_urlsafe(32)
-    print("user")
+    user = User.query.filter_by(email_address=email).first()
+    if not user:
+        return {"message": "The e-mail you entered is not the e-mail you submitted during sign-up"}, 400
 
-    user = User.query.filter_by(id=user_id).first()
-    email = user.email_address
-
+    now = datetime.utcnow()
+    if user.last_resend and now - user.last_resend < timedelta(seconds=60):
+        return {"message": "Try again in 1 minute"}
+    user.last_resend = now
     verification = EmailVerification(
-        user_id=user_id,
+        user_id=user.id,
         token=token,
         expires_at=datetime.utcnow() + timedelta(hours=24)
     )
     db.session.add(verification)
     db.session.commit()
-
     send_email(email, token)
 
     return {"message": "Verification email sent"}, 200
@@ -66,6 +70,8 @@ def verify_email():
     if token_record.expires_at < datetime.now():
         return {"message":"Token expired"}
     user = User.query.get(token_record.user_id)
+    if not user:
+        return {"Server Error, Please sign-up again"}
     user.is_verified = True
 
     db.session.delete(token_record)

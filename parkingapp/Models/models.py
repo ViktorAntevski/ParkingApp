@@ -1,6 +1,6 @@
 from parkingapp import db
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from parkingapp import bcrypt
 import tzdata
@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     email_address = db.Column(db.String(50), unique=True, nullable=False)
     ID_card = db.Column(db.String(20), nullable=False)
     is_verified = db.Column(db.Boolean, default=False)
+    last_resend = db.Column(db.DateTime)
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
