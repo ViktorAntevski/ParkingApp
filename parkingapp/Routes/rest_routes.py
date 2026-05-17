@@ -222,8 +222,14 @@ class StopHourlyParking(Resource):
         return {
         "message": f"Parking stopped successfully, The total cost of the parking service is {total_invoice} denars"
     }, 201
+stop_hourly_metering = reqparse.RequestParser()
+stop_hourly_metering.add_argument(
+    "plates", required=True, location="json")
+class Resident(Resource):
 
-class MonthlySubs(Resource):
+    user = User.query.get(user_id=user)
+
+class MonthlySub(Resource):
     def post(self):
         pass
 
