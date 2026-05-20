@@ -225,9 +225,6 @@ class StopHourlyParking(Resource):
 stop_hourly_metering = reqparse.RequestParser()
 stop_hourly_metering.add_argument(
     "plates", required=True, location="json")
-class Resident(Resource):
-
-    user = User.query.get(user_id=user)
 
 class MonthlySub(Resource):
     def post(self):
