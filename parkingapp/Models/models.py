@@ -63,8 +63,7 @@ class MonthlySub(db.Model):
     payed_for_month = db.Column(db.Boolean, default = False)
     last_updated = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), onupdate=lambda: datetime.now(Skopje_TZ), nullable=False)
 
-#This table has no function in the REST API, only for analytics
-class Resident(db.Model):
+#class Resident(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
     registration_time = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
