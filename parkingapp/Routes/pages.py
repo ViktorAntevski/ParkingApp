@@ -20,7 +20,6 @@ def signup_page():
 
 @pages.route("/login", methods=["GET"])
 def login_page():
-    print(current_user)
     if current_user.is_authenticated:
         if current_user.is_verified:
             return redirect(url_for("dashboard.dashboard_menu"))
