@@ -11,7 +11,8 @@ import tzdata
 import secrets
 from flask_mail import Message
 from parkingapp.extensions import mail
-
+import re
+from pydantic import 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
@@ -56,6 +57,9 @@ add_user.add_argument("phone_number", type=str, help="", required = True, locati
 add_user.add_argument("email_address", type=str, help="", required = True, location="json")
 add_user.add_argument("ID_card", type=str, help="", required = True, location="json")
 
+
+
+#######################ROUTES#########################################
 
 class UserSignUp(Resource):
     def post(self):
@@ -138,15 +142,20 @@ class HourlyParking(Resource):
         zone = args["parking_zone"]
         plates = args["plates"]
 
-        existing = ActiveRegistrationPlate.query.filter_by(vehicle_reg_plate=plates).first()
+        plates_written_in_sys = ActiveRegistrationPlate.query.filter_by(vehicle_reg_plate=plates).first()
 
         if zone not in VALID_ZONES:
             return{"message": "Incorrect parking zone"}, 400
 
-
-        if existing:
+        pattern = r'^[A-Za-z]{2}[0-9]{4}[A-Za-z]{2}$'
+        if not re.match(pattern, plates):
             return {
-                "message": "This vehicle is already actively registered"
+                "message": "Insert valid plates"
+            }, 400
+
+        if plates_written_in_sys:
+            return {
+                "message": "This vehicle is already registered in our system"
             }, 400
 
         parking = ActiveRegistrationPlate(user_id=user_id, vehicle_reg_plate=plates,registered_parking_zone=zone)
