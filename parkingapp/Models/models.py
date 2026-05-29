@@ -39,7 +39,7 @@ class EmailVerification(db.Model):
 #base class: Registration Plates, Parking Operator queries here, these are the common attributes of all types of services,
 # if not in table -> car should be fined
 class ActiveRegistrationPlate(db.Model):
-    __tablename__ = "active_users"
+    __tablename__ = "active_registration_plates"
     id = db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("User.id"))
     vehicle_reg_plate = db.Column(db.String(20), unique=True, nullable=False)
@@ -63,11 +63,12 @@ class MonthlySub(db.Model):
     payed_for_month = db.Column(db.Boolean, default = False)
     last_updated = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), onupdate=lambda: datetime.now(Skopje_TZ), nullable=False)
 
-#class Resident(db.Model):
+class Resident(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
     registration_time = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
-
+    vehicle_reg_plate = db.Column(db.String(20), nullable = False, unique = True)
+    identity = db.Column(db.Boolean, default = False)
 ##might be obsolete, merge with base, check if any business logic differences exist between sms users and guests
 class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
