@@ -3,6 +3,61 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h2>Welcome, {{ user.username }}, the service is currently in development</h2>
+    <h2>Please enter your vehicle's registration plate, {{ user.username }}</h2>
+
+
+<label>
+  Registration plate:<br>
+  <input type="text" id="plates" required>
+</label><br><br>
+
+<label>
+  Enter your parking zone:<br>
+  <input type="text" id="zone" required>
+</label><br><br>
+
+<button type="button" onclick="register()">Register</button>
+
+<p id="error" style="color:red;"></p>
+
+{% endblock %}
+function register() {
+  const plates = document.getElementById("plates").value;
+  const zone = document.getElementById("zone").value;
+
+  fetch("/register-for-residents", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      plates: plates,
+      zone: zone
+    })
+  })
+  .then(async response => {
+    const data = await response.json();
+
+    if (!response.ok) {
+      document.getElementById("error").innerText = data.message;
+      return;
+      }
+  })
+  .catch(err => {
+    document.getElementById("error").innerText = "Server error";
+    console.error(err);
+  });
+  }
+{% block scripts %}
+
+
+
+
+
+
+
+
+
+
 
 {% endblock %}

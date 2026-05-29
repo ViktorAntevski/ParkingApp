@@ -1,5 +1,5 @@
 from flask import Flask, url_for, redirect, Blueprint, request
-from parkingapp.Models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice, EmailVerification
+from parkingapp.Models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice, EmailVerification, Resident
 from flask_restful import Resource,Api, marshal_with, fields, reqparse, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user,logout_user,current_user,login_required
@@ -12,7 +12,7 @@ import secrets
 from flask_mail import Message
 from parkingapp.extensions import mail
 import re
-from pydantic import 
+
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
@@ -44,6 +44,27 @@ ParkingApp Team
 
     mail.send(msg)
 
+def valid_parking_zone(zone):
+    if zone not in VALID_ZONES:
+        return {"message": "Incorrect parking zone"
+                }, 400
+
+
+def valid_plates(plates):
+    pattern = r'^[A-Za-z]{2}[0-9]{4}[A-Za-z]{2}$'
+    if not re.match(pattern, plates):
+        return {
+        "message": "Insert valid plates"
+    }, 400
+
+def duplicate_plates(plates):
+    plates_written_in_sys = db.session.execute(
+        db.select(ActiveRegistrationPlate).where(ActiveRegistrationPlate.vehicle_reg_plate == plates)).scalar_one()
+    if plates_written_in_sys:
+        return {
+            "message": "This vehicle is already registered in our system"
+        }, 400
+
 
 
 
@@ -60,6 +81,7 @@ add_user.add_argument("ID_card", type=str, help="", required = True, location="j
 
 
 #######################ROUTES#########################################
+class VerifyRequestRoute(Resource):
 
 class UserSignUp(Resource):
     def post(self):
@@ -68,9 +90,9 @@ class UserSignUp(Resource):
         username = args["username"].strip()
         email = args["email_address"].strip()
 
-        if User.query.filter_by(username=username).first():
+        if db.session.execute(db.select(User).where(User.username == username)).scalar_one():
             return {'message': 'Username already taken'}, 400
-        if User.query.filter_by(email_address=email).first():
+        if db.session.execute(db.select(User).where(User.username == username)).scalar_one():
             return {'message': 'Email already taken'}, 400
         if len(password) < 12 or len(password) > 30:
             return {'message': 'Passwords should be between 12 and 30 characters long'}, 400
@@ -103,10 +125,11 @@ login_parser.add_argument("password", type=str, required=True, help="Password re
 class UserLogin(Resource):
     def post(self):
         args = login_parser.parse_args()
+        password = args["password"].strip()
+        username = args["username"].strip()
+        user = db.session.execute(db.select(User).where(User.username == username)).scalar_one()
 
-        user = User.query.filter_by(username=args["username"]).first()
-
-        if not user or not user.check_password(args["password"]):
+        if not user or not user.check_password(password):
             return {"message": "Invalid username or password"}, 401
         login_user(user)
 
@@ -131,7 +154,6 @@ start_hourly_metering = reqparse.RequestParser()
 start_hourly_metering.add_argument("plates", type=str, required=True, help="insert your vehicle plates")
 start_hourly_metering.add_argument("parking_zone", type=str, required=True, help="insert your parking zone")
 
-
 class HourlyParking(Resource):
     method_decorators = [login_required]
 
@@ -142,21 +164,17 @@ class HourlyParking(Resource):
         zone = args["parking_zone"]
         plates = args["plates"]
 
-        plates_written_in_sys = ActiveRegistrationPlate.query.filter_by(vehicle_reg_plate=plates).first()
+        error = valid_parking_zone(zone)
+        if error:
+            return error
 
-        if zone not in VALID_ZONES:
-            return{"message": "Incorrect parking zone"}, 400
+        error = valid_plates(plates)
+        if error:
+            return error
 
-        pattern = r'^[A-Za-z]{2}[0-9]{4}[A-Za-z]{2}$'
-        if not re.match(pattern, plates):
-            return {
-                "message": "Insert valid plates"
-            }, 400
-
-        if plates_written_in_sys:
-            return {
-                "message": "This vehicle is already registered in our system"
-            }, 400
+        error = duplicate_plates(plates)
+        if error:
+            return error
 
         parking = ActiveRegistrationPlate(user_id=user_id, vehicle_reg_plate=plates,registered_parking_zone=zone)
         invoice = HourlyParkingInvoice(user_id=user_id)
@@ -184,14 +202,13 @@ class StopHourlyParking(Resource):
         args = stop_hourly_metering.parse_args()
         plates = args["plates"]
 
-        active = ActiveRegistrationPlate.query.filter_by(
-            vehicle_reg_plate=plates,
-            user_id=user_id
-        ).first()
+        active = db.session.execute(db.select(ActiveRegistrationPlate).where(
+            ActiveRegistrationPlate.vehicle_reg_plate == plates,
+            ActiveRegistrationPlate.user_id == user_id
+        )).scalar_one()
 
-        invoice = HourlyParkingInvoice.query.filter_by(
-            user_id=user_id
-        ).first()
+        invoice = db.session.execute(db.select(HourlyParkingInvoice).where(
+            HourlyParkingInvoice.user_id == user_id)).scalar_one()
 
         if not invoice:
             return {
@@ -235,6 +252,38 @@ stop_hourly_metering = reqparse.RequestParser()
 stop_hourly_metering.add_argument(
     "plates", required=True, location="json")
 
+add_resident = reqparse.RequestParser()
+add_resident.add_argument("plates", type = str, required = True, help="Please provide your plates number", location="json")
+add_resident.add_argument("zone", type = str, required = True, help="Please provide a valid parking zone. Check Price List for more info", location="json")
+
+class RegisterResident(Resource):
+    method_decorators = [login_required]
+
+    def post(self):
+        print(current_user.id)
+        user_id = current_user.id1
+        args = add_resident.parse_args()
+        plates = args["plates"]
+        zone = args["zone"]
+
+        error = valid_parking_zone(zone)
+        if error:
+            return error
+
+        error = valid_plates(plates)
+        if error:
+            return error
+
+        error = duplicate_plates(plates)
+        if error:
+            return error
+
+        plates_written_in_sys = Resident(vehicle_reg_plate=plates, user_id=user_id, registered_parking_zone=zone)
+        db.session.add(plates_written_in_sys)
+        db.session.commit()
+        return {"message": "Your vehicle registration is pending. Please go to your nearest ParkingApp office and confirm your identity"}, 201
+
+
 class MonthlySub(Resource):
     def post(self):
         pass
@@ -250,3 +299,4 @@ api.add_resource(UserLogin, "/login")
 api.add_resource(UserLogout, "/logout")
 api.add_resource(HourlyParking, "/hourly-parking")
 api.add_resource(StopHourlyParking, "/stop-hourly-parking")
+api.add_resource(RegisterResident, "/api-register-resident")
