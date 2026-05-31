@@ -27,7 +27,7 @@
 
 <body>
 
-    <!-- TOAST (global, hidden by default) -->
+    <!-- Toast -->
     <div id="toast"
          style="
            position: fixed;
@@ -61,28 +61,28 @@
         {% block content %}{% endblock %}
     </main>
         {% block scripts %}{% endblock %}
-    <!-- LOGOUT SCRIPT (frontend only for now) -->
-    <script>
-        function logout() {
-            fetch("/logout", {
-                method: "POST"
-            })
-            .then(response => {
-                if (response.ok) {
 
+    <script>
+        async function logout() {
+            try {
+            const response = await fetch("/logout", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+            if (response.ok) {
                 localStorage.removeItem("user_id");
                 localStorage.removeItem("username");
-
+                sessionStorage.setItem("toast", data.message);
                     window.location.href = "/";
-                } else {
-                    alert("Logout failed");
-                }
-            })
-            .catch(err => {
+            } else {
+                    alert(data.message || "Logout failed");
+            }
+        }   catch(err) {
                 console.error("Logout error:", err);
                 alert("Server error during logout");
-            });
         }
+    }
     </script>
 
 </body>

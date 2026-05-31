@@ -7,10 +7,12 @@ from parkingapp import db
 from parkingapp.Routes.rest_routes import send_email
 import secrets
 from datetime import datetime, timedelta
+from parkingapp.Routes.rest_routes import verified_required
 
 dashboard = Blueprint("/dashboard", __name__, url_prefix="/dashboard")
 @dashboard.before_request
 @login_required
+@verified_required
 def require_login():
     pass
 

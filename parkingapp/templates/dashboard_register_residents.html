@@ -21,11 +21,14 @@
 <p id="error" style="color:red;"></p>
 
 {% endblock %}
+
+{% block scripts %}
+<script>
 function register() {
   const plates = document.getElementById("plates").value;
   const zone = document.getElementById("zone").value;
 
-  fetch("/register-for-residents", {
+  fetch("/api-register-resident", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -38,26 +41,12 @@ function register() {
   .then(async response => {
     const data = await response.json();
 
-    if (!response.ok) {
-      document.getElementById("error").innerText = data.message;
-      return;
-      }
+    document.getElementById("error").innerText = data.message;
   })
   .catch(err => {
     document.getElementById("error").innerText = "Server error";
     console.error(err);
   });
-  }
-{% block scripts %}
-
-
-
-
-
-
-
-
-
-
-
+}
+</script>
 {% endblock %}

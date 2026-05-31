@@ -18,11 +18,11 @@ def home():
 def signup_page():
     return render_template("signup.html")
 
-@pages.route("/login", methods=["GET"])
+@pages.route("/login-page", methods=["GET"])
 def login_page():
     if current_user.is_authenticated:
         if current_user.is_verified:
-            return redirect(url_for("dashboard.dashboard_menu"))
+            return redirect(url_for("/dashboard.dashboard_menu"))
         return redirect(url_for("pages.verify"))
     return render_template("login.html")
 
@@ -56,7 +56,7 @@ def resend():
     return {"message": "Verification email sent"}, 200
 
 
-@pages.route("/verify-email", methods=["GET"])
+@pages.route("/verify-email1", methods=["GET"])
 def verify_email():
     token=request.args.get("token")
 
@@ -70,7 +70,7 @@ def verify_email():
         return {"message":"Token expired"}
     user = User.query.get(token_record.user_id)
     if not user:
-        return {"Server Error, Please sign-up again"}
+        return {"message": "We couldn't verify your account. Please request a new verification email."}
     user.is_verified = True
 
     db.session.delete(token_record)
