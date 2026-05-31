@@ -5,9 +5,19 @@ from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from parkingapp.mail_config import Config
 from parkingapp.extensions import mail
+from sqlalchemy import MetaData
 
 
-db = SQLAlchemy()
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+db_metadata = MetaData(naming_convention=convention)
+db = SQLAlchemy(metadata=db_metadata)
 login_manager = LoginManager()
 bcrypt = Bcrypt()
 migrate=Migrate()

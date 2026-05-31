@@ -1,3 +1,5 @@
+from tkinter.constants import CASCADE
+
 from parkingapp import db
 from flask_login import UserMixin
 from datetime import datetime, timedelta
@@ -5,6 +7,7 @@ from zoneinfo import ZoneInfo
 from parkingapp import bcrypt
 import tzdata
 
+#TimeZone
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 
 
@@ -32,16 +35,16 @@ class User(db.Model, UserMixin):
 
 class EmailVerification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id= db.Column(db.Integer, db.ForeignKey("User.id"))
-    token = db.Column(db.String(44), nullable=False)
+    user_id= db.Column(db.Integer, db.ForeignKey("User.id", ondelete=CASCADE))
+    token = db.Column(db.String(44), nullable=False, unique=True)
     expires_at = db.Column(db.DateTime, nullable=False)
 
 #base class: Registration Plates, Parking Operator queries here, these are the common attributes of all types of services,
 # if not in table -> car should be fined
 class ActiveRegistrationPlate(db.Model):
-    __tablename__ = "active_registration_plates"
+    __tablename__ = "active_users"
     id = db.Column(db.Integer, primary_key=True)
-    user_id= db.Column(db.Integer, db.ForeignKey("User.id"))
+    user_id= db.Column(db.Integer, db.ForeignKey("User.id", ondelete=CASCADE))
     vehicle_reg_plate = db.Column(db.String(20), unique=True, nullable=False)
     registered_parking_zone = db.Column(db.String(5), nullable=False)
     fined = db.Column(db.Boolean, default=False)
@@ -49,9 +52,9 @@ class ActiveRegistrationPlate(db.Model):
 #ShortTerm  metering - which user, how much hours should be billed
 class HourlyParkingInvoice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("User.id", ondelete=CASCADE))
     check_in = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
-
+    vehicle_reg_plate = db.Column(db.String(20), unique=True, nullable=False)
 
 
 # Monthly subs - once a user is written in this table, only payed_for_month=True/False is updated monthly
@@ -59,16 +62,18 @@ class HourlyParkingInvoice(db.Model):
 # set to False
 class MonthlySub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("User.id", ondelete=CASCADE))
+    vehicle_reg_plate = db.Column(db.String(20), unique=True, nullable=False)
     payed_for_month = db.Column(db.Boolean, default = False)
     last_updated = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), onupdate=lambda: datetime.now(Skopje_TZ), nullable=False)
 
 class Resident(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("User.id", ondelete=CASCADE))
     registration_time = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
-    vehicle_reg_plate = db.Column(db.String(20), nullable = False, unique = True)
-    identity = db.Column(db.Boolean, default = False)
+    vehicle_reg_plate = db.Column(db.String(20), unique=True, nullable=False)
+    identity = db.Column(db.Boolean, default=False)
+
 ##might be obsolete, merge with base, check if any business logic differences exist between sms users and guests
 class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
