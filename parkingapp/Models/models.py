@@ -30,6 +30,9 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
 
+    def get_id(self):
+        return f"user:{self.id}"
+
     def __repr__(self):
         return f'<{User}: {self.username}>'
 
@@ -79,17 +82,20 @@ class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reg_plates_id = db.Column(db.Integer, unique=True, nullable=False)
 
-class Operator(db.Model):
+class Operator(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
+    current_zone = db.Column(db.String(10), default="Z1")
 
-#class ParkingZones(db.Model):
-    #__tablename__ = "zones"
-   # id = db.Column(db.Integer, primary_key=True)
-   # zone = db.Column(db.String(20), unique=True, nullable=False)
-   # rate = db.Column(db.Integer(20), unique=True, nullable=False)
-#zones = ["Z1": ,"Z2": ]
+    def set_password(self, password):
+        self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        return f"operator:{self.id}"
 
 
 #class GuestCard(db.Model):

@@ -35,11 +35,30 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    from parkingapp.Models.models import User
+    from parkingapp.Models.models import User, Operator
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+
+        try:
+            type_, id_ = user_id.split(":")
+            id_ = int(id_)
+        except (ValueError, AttributeError):
+            return None
+
+        if type_ == "user":
+            user = User.query.get(id_)
+            if user:
+                user.user_type = "user"
+            return user
+
+        elif type_ == "operator":
+            operator = Operator.query.get(id_)
+            if operator:
+                operator.user_type = "operator"
+            return operator
+
+        return None
 
     from parkingapp.Routes.pages import pages
     from parkingapp.Routes.dashboard import dashboard

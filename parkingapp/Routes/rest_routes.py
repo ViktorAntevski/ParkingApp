@@ -2,7 +2,7 @@ from flask import Flask, url_for, redirect, Blueprint, request, flash
 from parkingapp.Models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice, EmailVerification, Resident
 from flask_restful import Resource,Api, marshal_with, fields, reqparse, abort
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_user,logout_user,current_user,login_required
+from flask_login import login_user,logout_user,current_user,login_required, LoginManager
 from parkingapp import db
 from parkingapp.price_list import ZONE_RATES
 from datetime import datetime, timedelta
@@ -300,9 +300,6 @@ class StopHourlyParking(Resource):
         return {
         "message": f"Parking stopped successfully, The total cost of the parking service is {total_invoice} denars"
     }, 201
-stop_hourly_metering = reqparse.RequestParser()
-stop_hourly_metering.add_argument(
-    "plates", required=True, location="json")
 
 add_resident = reqparse.RequestParser()
 add_resident.add_argument("plates", type = str, required = True, help="Please provide your plates number", location="json")
