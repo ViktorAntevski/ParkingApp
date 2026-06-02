@@ -6,7 +6,9 @@ from flask_bcrypt import Bcrypt
 from parkingapp.mail_config import Config
 from parkingapp.extensions import mail
 from sqlalchemy import MetaData
-
+from auth import register_user_loader
+from dotenv import load_dotenv
+import os
 
 convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -26,7 +28,9 @@ def create_app():
 
     app = Flask(__name__, template_folder = "templates")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///parking_data.db'
-    app.config["SECRET_KEY"] = "SOME KEY"
+
+    load_dotenv()
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config.from_object(Config)
 
     db.init_app(app)
@@ -35,38 +39,16 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    from parkingapp.Models.models import User, Operator
+    register_user_loader(login_manager)
 
-    @login_manager.user_loader
-    def load_user(user_id):
-
-        try:
-            type_, id_ = user_id.split(":")
-            id_ = int(id_)
-        except (ValueError, AttributeError):
-            return None
-
-        if type_ == "user":
-            user = User.query.get(id_)
-            if user:
-                user.user_type = "user"
-            return user
-
-        elif type_ == "operator":
-            operator = Operator.query.get(id_)
-            if operator:
-                operator.user_type = "operator"
-            return operator
-
-        return None
 
     from parkingapp.Routes.pages import pages
-    from parkingapp.Routes.dashboard import dashboard
+    from parkingapp.Routes.user_dashboard import dashboard
+    from parkingapp.Routes.user_routes import user_api_bp
+    from parkingapp.Routes.operator_routes import operator_api_bp
     app.register_blueprint(pages)
     app.register_blueprint(dashboard)
-
-    from parkingapp.Routes.rest_routes import api_bp
-    app.register_blueprint(api_bp)
-
+    app.register_blueprint(user_api_bp)
+    app.register_blueprint(operator_api_bp)
 
     return app

@@ -4,7 +4,7 @@ from parkingapp.price_list import ZONE_RATES
 from datetime import datetime
 from parkingapp.Models.models import EmailVerification, User
 from parkingapp import db
-from parkingapp.Routes.rest_routes import send_email
+from parkingapp.Routes.user_routes import send_email
 import secrets
 from datetime import datetime, timedelta
 
@@ -24,6 +24,12 @@ def login_page():
         if current_user.is_verified:
             return redirect(url_for("/dashboard.dashboard_menu"))
         return redirect(url_for("pages.verify"))
+    return render_template("login.html")
+
+@pages.route("/operator-login-page", methods=["GET"])
+def operator_login_page():
+    if current_user.is_authenticated:
+        return redirect(url_for("/dashboard.dashboard_menu"))
     return render_template("login.html")
 
 @pages.route("/verification-required", methods=["GET"])

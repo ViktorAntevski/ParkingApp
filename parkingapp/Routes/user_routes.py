@@ -13,12 +13,13 @@ from flask_mail import Message
 from parkingapp.extensions import mail
 import re
 from functools import wraps
+from auth import user_required
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
-api_bp = Blueprint('api', __name__)
-api = Api(api_bp)
+user_api_bp = Blueprint('api', __name__)
+user_api = Api(user_api_bp)
 
 
 
@@ -188,9 +189,6 @@ class UserLogin(Resource):
 
         return {
             "message": "Login successful",
-            "user_id": user.id,
-            "username": user.username,
-            "is_verified":user.is_verified
         }, 200
 
 class UserLogout(Resource):
