@@ -4,17 +4,19 @@ from parkingapp.price_list import ZONE_RATES
 from datetime import datetime
 from parkingapp.Models.models import EmailVerification, User
 from parkingapp import db
-from parkingapp.Routes.rest_routes import send_email
+from parkingapp.Routes.user_routes import send_email
 import secrets
 from datetime import datetime, timedelta
-from parkingapp.Routes.rest_routes import verified_required
+from parkingapp.Routes.user_routes import verified_required
+from auth import user_required
 
 dashboard = Blueprint("/dashboard", __name__, url_prefix="/dashboard")
 @dashboard.before_request
 @login_required
+@user_required
 @verified_required
-def require_login():
-    pass
+
+
 
 @dashboard.route("")
 def dashboard_menu():
