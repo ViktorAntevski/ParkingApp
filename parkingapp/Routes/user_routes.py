@@ -13,12 +13,12 @@ from flask_mail import Message
 from parkingapp.extensions import mail
 import re
 from functools import wraps
-from auth import user_required
+from parkingapp.auth import user_required
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
-user_api_bp = Blueprint('api', __name__)
+user_api_bp = Blueprint('user_api', __name__)
 user_api = Api(user_api_bp)
 
 
@@ -148,7 +148,7 @@ class VerifyEmail(Resource):
         if not token_received or not pending_user:
             return {"message":"Invalid token"
                     }, 400
-        user = db.session.execute(db.select(User).where(User.id == pending_user.user_id)).scalar_one_or_none()
+        user = pending_user.user
         if not user:
             # should never happen (DB invariant)
             return {"message": "We couldn't verify your account. Please request a new verification email."
@@ -204,7 +204,7 @@ start_hourly_metering.add_argument("plates", type=str, required=True, help="inse
 start_hourly_metering.add_argument("parking_zone", type=str, required=True, help="insert your parking zone")
 
 class HourlyParking(Resource):
-    method_decorators = [login_required, verified_required]
+    method_decorators = [login_required, user_required, verified_required]
 
     def post(self):
 
@@ -244,7 +244,7 @@ stop_hourly_metering.add_argument(
     "plates", required=True, location="json")
 
 class StopHourlyParking(Resource):
-    method_decorators = [login_required, verified_required]
+    method_decorators = [login_required, user_required, verified_required]
 
     def post(self):
         user_id = current_user.id
@@ -255,8 +255,7 @@ class StopHourlyParking(Resource):
             ActiveRegistrationPlate.vehicle_reg_plate == plates
         )).scalar_one_or_none()
 
-        invoice = db.session.execute(db.select(HourlyParkingInvoice).where(
-            HourlyParkingInvoice.vehicle_reg_plate  == plates)).scalar_one_or_none()
+        invoice = active.hourly_invoice
 
         if not invoice or not active:
             return {
@@ -304,7 +303,7 @@ add_resident.add_argument("plates", type = str, required = True, help="Please pr
 add_resident.add_argument("zone", type = str, required = True, help="Please provide a valid parking zone. Check Price List for more info", location="json")
 
 class RegisterResident(Resource):
-    method_decorators = [login_required]
+    method_decorators = [login_required, user_required, verified_required]
 
     def post(self):
         print(current_user.id)
@@ -344,10 +343,10 @@ class Fined(Resource):
         pass
 
 
-api.add_resource(UserSignUp, "/signup")
-api.add_resource(VerifyEmail, "/verify-email")
-api.add_resource(UserLogin, "/login")
-api.add_resource(UserLogout, "/logout")
-api.add_resource(HourlyParking, "/hourly-parking")
-api.add_resource(StopHourlyParking, "/stop-hourly-parking")
-api.add_resource(RegisterResident, "/api-register-resident")
+user_api.add_resource(UserSignUp, "/signup")
+user_api.add_resource(VerifyEmail, "/verify-email")
+user_api.add_resource(UserLogin, "/login")
+user_api.add_resource(UserLogout, "/logout")
+user_api.add_resource(HourlyParking, "/hourly-parking")
+user_api.add_resource(StopHourlyParking, "/stop-hourly-parking")
+user_api.add_resource(RegisterResident, "/api-register-resident")

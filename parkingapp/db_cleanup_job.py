@@ -1,6 +1,7 @@
 from parkingapp import db, create_app
 from parkingapp.Models.models import EmailVerification, User, ActiveRegistrationPlate, HourlyParkingInvoice
 from datetime import datetime
+from sqlalchemy import text
 
 flask_app = create_app()
 
@@ -12,10 +13,16 @@ flask_app = create_app()
 ##only for dev - Clear user table
 
 with flask_app.app_context():
-    db.session.execute(db.delete(User))
-    db.session.execute(db.delete(EmailVerification))
-    db.session.execute(db.delete(ActiveRegistrationPlate))
-    db.session.execute(db.delete(HourlyParkingInvoice))
-    print("User table cleared")
-    db.session.commit()
+        result = db.session.execute(text("PRAGMA foreign_key_list(email_verification);"))
+
+        for row in result:
+            print(row)
+
+#with flask_app.app_context():
+    #db.session.execute(db.delete(User))
+    #db.session.execute(db.delete(EmailVerification))
+   #db.session.execute(db.delete(ActiveRegistrationPlate))
+    #db.session.execute(db.delete(HourlyParkingInvoice))
+   # print("User table cleared")
+   # db.session.commit()
 

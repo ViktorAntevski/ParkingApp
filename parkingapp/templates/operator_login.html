@@ -15,6 +15,11 @@
   <input type="password" id="password" required>
 </label><br><br>
 
+<label>
+  Zone<br>
+  <input type="text" id="zone" required>
+</label><br><br>
+
 <button type="button" onclick="login()">Login</button>
 
 <p id="error" style="color:red;"></p>
@@ -26,15 +31,17 @@
 function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
+  const zone = document.getElementById("zone").value;
 
-  fetch("/login", {
+  fetch("/operator-login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
       username: username,
-      password: password
+      password: password,
+      zone: zone
     })
   })
   .then(async response => {
@@ -55,7 +62,7 @@ function login() {
       localStorage.setItem("username", data.username);
       localStorage.setItem("is_verified", data.is_verified);
 
-      window.location.href = "/dashboard";
+      window.location.href = "/operator";
 
   })
   .catch(err => {

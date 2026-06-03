@@ -6,7 +6,6 @@ from flask_bcrypt import Bcrypt
 from parkingapp.mail_config import Config
 from parkingapp.extensions import mail
 from sqlalchemy import MetaData
-from auth import register_user_loader
 from dotenv import load_dotenv
 import os
 
@@ -38,6 +37,8 @@ def create_app():
     bcrypt.init_app(app)
     mail.init_app(app)
     migrate.init_app(app, db)
+
+    from parkingapp.auth import register_user_loader
 
     register_user_loader(login_manager)
 

@@ -8,7 +8,7 @@ from parkingapp.Routes.user_routes import send_email
 import secrets
 from datetime import datetime, timedelta
 from parkingapp.Routes.user_routes import verified_required
-from auth import user_required
+from parkingapp.auth import user_required
 
 dashboard = Blueprint("/dashboard", __name__, url_prefix="/dashboard")
 @dashboard.before_request
