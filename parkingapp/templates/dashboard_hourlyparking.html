@@ -21,6 +21,8 @@
     <p id="error" style="color: red; font-weight: bold;"></p>
 <p>*Please acknowledge that you are responsible for providing the required information correctly</p>
 
+{% endblock %}
+{% block scripts %}
     <script>
 document.addEventListener("DOMContentLoaded", () => {
   const msg = sessionStorage.getItem("toast");

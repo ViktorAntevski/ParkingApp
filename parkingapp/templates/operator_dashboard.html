@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Operators</title>
-</head>
-<body>
-<p>Currently under development</p>
-</body>
-</html>
+
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h2>Welcome, {{ user.username }}</h2>
+
+<a href="{{ url_for('/dashboard.inspect') }}">
+    <button>Hourly parking</button>
+</a><br><br>
+
+{% endblock %}
+
+{% block scripts %}
+document.addEventListener("DOMContentLoaded", () => {
+  const msg = sessionStorage.getItem("toast");
+
+  if (msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.display = "block";
+    sessionStorage.removeItem("toast");
+
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 3000); // 3 seconds
+  }
+});
+{% endblock %}

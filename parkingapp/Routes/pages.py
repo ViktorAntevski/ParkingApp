@@ -85,6 +85,6 @@ def verify_email():
     return  redirect("/dashboard?verified=true")
 
 
-@pages.route("/operators")
+@pages.route("/operator-login-page")
 def operator_login():
     return render_template("operator_dashboard.html")

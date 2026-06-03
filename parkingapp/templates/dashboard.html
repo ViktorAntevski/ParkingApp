@@ -4,6 +4,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
     <h2>Welcome, {{ user.username }}</h2>
 
     <p>Select a service:</p>
@@ -29,8 +30,8 @@
     <button>Stop Parking</button>
 </a><br><br>
 
-
-
+{% endblock %}
+{% block scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const msg = sessionStorage.getItem("toast");
@@ -46,13 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000); // 3 seconds
   }
 });
-</script>
-
-<script>
-
-function hourly_parking(){
-window.location.href = "/hourly_parking";
-    }
 </script>
 
 {% endblock %}
