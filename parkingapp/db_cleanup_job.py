@@ -1,5 +1,5 @@
 from parkingapp import db, create_app
-from parkingapp.Models.models import EmailVerification, User, ActiveRegistrationPlate, HourlyParkingInvoice
+from parkingapp.models.models import EmailVerification, User, ActiveRegistrationPlate, HourlyParkingInvoice
 from datetime import datetime
 from sqlalchemy import text
 

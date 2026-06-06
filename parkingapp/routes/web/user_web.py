@@ -1,21 +1,16 @@
-from flask import Blueprint, render_template, url_for, request, redirect , abort
+from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from parkingapp.price_list import ZONE_RATES
-from datetime import datetime
-from parkingapp.Models.models import EmailVerification, User
-from parkingapp import db
-from parkingapp.Routes.user_routes import send_email
-import secrets
-from datetime import datetime, timedelta
-from parkingapp.Routes.user_routes import verified_required
-from parkingapp.auth import user_required
+from pricing.price_list import ZONE_RATES
+from routes.api.user_API import verified_required
+from parkingapp.auth.user_loader import user_required
 
-dashboard = Blueprint("/dashboard", __name__, url_prefix="/dashboard")
+dashboard = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 @dashboard.before_request
 @login_required
 @user_required
 @verified_required
-
+def enforce_auth():
+    pass
 
 
 @dashboard.route("")
@@ -37,7 +32,7 @@ def reg_for_res():
 
 @dashboard.route("/service-price-list")
 def price_list():
-    return render_template("dashboard_pricelist.html", user=current_user, prices=ZONE_RATES,)
+    return render_template("dashboard_pricelist.html", user=current_user, prices=ZONE_RATES)
 
 @dashboard.route("/stop-parking")
 def stop_parking():

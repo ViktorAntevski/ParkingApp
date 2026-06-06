@@ -1,7 +1,7 @@
 from functools import wraps
 from flask_login import current_user
 from flask import abort
-from parkingapp.Models.models import User, Operator
+from parkingapp.models.models import User, Operator
 from flask_login import LoginManager
 
 

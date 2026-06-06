@@ -1,27 +1,9 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
-from parkingapp.mail_config import Config
-from parkingapp.extensions import mail
-from sqlalchemy import MetaData
+from parkingapp.extensions import db, migrate, login_manager, bcrypt, mail
+from config import MailConfig
 from dotenv import load_dotenv
 import os
 
-convention = {
-    "ix": 'ix_%(column_0_label)s',
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "pk": "pk_%(table_name)s"
-}
-
-db_metadata = MetaData(naming_convention=convention)
-db = SQLAlchemy(metadata=db_metadata)
-login_manager = LoginManager()
-bcrypt = Bcrypt()
-migrate=Migrate()
 
 def create_app():
 
@@ -30,7 +12,7 @@ def create_app():
 
     load_dotenv()
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-    app.config.from_object(Config)
+    app.config.from_object(MailConfig)
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -38,18 +20,25 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    from parkingapp.auth import register_user_loader
+    from parkingapp.auth.user_loader import register_user_loader
 
     register_user_loader(login_manager)
 
 
-    from parkingapp.Routes.pages import pages
-    from parkingapp.Routes.user_dashboard import dashboard
-    from parkingapp.Routes.user_routes import user_api_bp
-    from parkingapp.Routes.operator_routes import operator_api_bp
+    from routes.web.auth_web import pages
+    from routes.web.user_web import dashboard
+    from routes.web.operator_web import operator_dashboard
+    from routes.api.user_API import user_api_bp
+    from routes.api.operator_API import operator_api_bp
+    from routes.api.user_auth_API import user_auth_api_bp
+    from routes.api.operator_auth_API import operator_auth_api_bp
+
     app.register_blueprint(pages)
     app.register_blueprint(dashboard)
+    app.register_blueprint(operator_dashboard)
     app.register_blueprint(user_api_bp)
     app.register_blueprint(operator_api_bp)
+    app.register_blueprint(user_auth_api_bp)
+    app.register_blueprint(operator_auth_api_bp)
 
     return app

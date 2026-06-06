@@ -1,13 +1,11 @@
-from flask import Flask, Blueprint, session
-from flask_restful import Resource, Api, reqparse
-from flask_login import login_required, login_user, logout_user
-from parkingapp import db
-from parkingapp.Models.models import ActiveRegistrationPlate, Operator
-from parkingapp.auth import operator_required
+from flask import Blueprint
+from flask_login import login_user
+from flask_restful import reqparse, Resource, Api
+from parkingapp.models.models import Operator
+from parkingapp.extensions import db
 
-operator_api_bp = Blueprint('operator_api', __name__)
-operator_api = Api(operator_api_bp)
-
+operator_auth_api_bp = Blueprint('operator_auth', __name__)
+operator_auth_api = Api(operator_auth_api_bp)
 
 login_parser = reqparse.RequestParser()
 login_parser.add_argument("username", type=str, required=True, help="Username required")
@@ -30,18 +28,4 @@ class OperatorLogin(Resource):
             "message": "Login successful",
         }, 200
 
-
-
-class OperatorInspect(Resource):
-    method_decorators = [login_required, operator_required]
-    def get(self):
-        vehicle_is_valid = db.session.execute(db.select(ActiveRegistrationPlate))
-
-
-operator_api.add_resource(OperatorLogin, "/operator-login")
-
-
-
-
-
-
+operator_auth_api.add_resource(OperatorLogin, "/operator-login")
