@@ -43,7 +43,7 @@ class EmailVerification(db.Model):
     user_id= db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     token = db.Column(db.String(44), nullable=False, unique=True)
     expires_at = db.Column(db.DateTime, nullable=False)
-    user = db.relationship("user", back_populates="ver_token", cascade="all, delete-orphan")
+    user = db.relationship("User", back_populates="ver_token")
 
 
 #base class: Registration Plates, Parking Operator queries here, these are the common attributes of all types of services,
