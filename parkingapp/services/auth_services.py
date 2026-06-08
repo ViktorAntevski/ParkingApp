@@ -1,7 +1,7 @@
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, session
 from flask_login import login_user
 from parkingapp.extensions import db
-from parkingapp.models.models import User, EmailVerification
+from parkingapp.models.models import User, EmailVerification, Operator
 from flask_restful import reqparse
 import secrets
 from parkingapp.auth.email_verification import send_email
@@ -45,7 +45,6 @@ def create_user(args):
     try:
         send_email(user.email_address, token)
         db.session.add(verification)
-        print("User commited to db")
         db.session.commit()
 
         return {"message": "A verification link has been sent to your e-mail", "user_id": user.id,
@@ -96,15 +95,33 @@ def user_login(args):
     if not user or not user.check_password(password):
         return {"message": "Invalid username or password"
                 }, 401
-    login_user(user)
-
     if not user.is_verified:
         return {
             "message": "Account not verified",
             "redirect": url_for("pages.verify")
         }, 403
 
+    login_user(user)
+
     return {
         "message": "Login successful",
     }, 200
 
+def operator_login(args):
+
+    password = args["password"].strip()
+    username = args["username"].strip()
+    zone = args["zone"].strip()
+
+    operator = db.session.execute(db.select(Operator).where(Operator.username == username)).scalar_one_or_none()
+
+    if not operator or not operator.check_password(password):
+        return {"message": "Invalid username or password"
+                }, 401
+
+    login_user(operator)
+    session["operator_zone"] = zone
+
+    return {
+        "message": "Login successful",
+    }, 200

@@ -4,24 +4,37 @@ from flask_login import login_required, login_user, logout_user
 from parkingapp import db
 from parkingapp.models.models import ActiveRegistrationPlate, Operator
 from parkingapp.auth.auth_decorators import operator_required
+from services import operator_services
 
 operator_api_bp = Blueprint('operator_api', __name__)
 operator_api = Api(operator_api_bp)
 
 
-login_parser = reqparse.RequestParser()
-login_parser.add_argument("username", type=str, required=True, help="Username required")
-login_parser.add_argument("password", type=str, required=True, help="Password required")
+inspect_plate_parser = reqparse.RequestParser()
+inspect_plate_parser.add_argument("plate", type=str, required=True, help="Reg Plate required")
 
-
-class OperatorInspect(Resource):
+class PlateCheck(Resource):
     method_decorators = [login_required, operator_required]
-    def get(self):
-        vehicle_is_valid = db.session.execute(db.select(ActiveRegistrationPlate))
+    def post(self):
+
+        args = inspect_plate_parser.parse_args()
+
+        return operator_services.plate_check(args)
 
 
-operator_api.add_resource(OperatorInspect, "/operator-inspect")
+change_zone_parser = reqparse.RequestParser()
+change_zone_parser.add_argument("zone", type=str, required=True, help="Username required")
 
+class ChangeZone(Resource):
+    def post(self):
+
+        args = change_zone_parser.parse_args()
+
+        return operator_services.change_zone(args)
+
+
+operator_api.add_resource(PlateCheck, "/operator/plate-check")
+operator_api.add_resource(ChangeZone, "/operator/change-zone")
 
 
 

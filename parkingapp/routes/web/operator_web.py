@@ -15,6 +15,6 @@ def enforce_auth():
 def dashboard_menu():
     return render_template("operator_dashboard.html", user=current_user)
 
-@operator_dashboard.route("")
+@operator_dashboard.route("/inspect")
 def inspect():
-    return render_template("inspect.html", user=current_user)
+    return render_template("operator_dashboard_inspect.html", user=current_user)

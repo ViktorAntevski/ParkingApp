@@ -6,7 +6,7 @@ from parkingapp.models.models import User, EmailVerification, Operator
 import secrets
 from parkingapp.auth.email_verification import send_email
 from datetime import datetime, timedelta
-from parkingapp.services import auth_services, operator_services, user_services
+from parkingapp.services import auth_services
 
 user_auth_api_bp = Blueprint('user_auth', __name__)
 user_auth_api = Api(user_auth_api_bp)
@@ -63,20 +63,10 @@ login_parser.add_argument("password", type=str, required=True, help="Password re
 
 class OperatorLogin(Resource):
     def post(self):
+
         args = login_parser.parse_args()
-        password = args["password"].strip()
-        username = args["username"].strip()
-        zone = args["zone"].strip()
-        operator = db.session.execute(db.select(Operator).where(Operator.username == username)).scalar_one_or_none()
 
-        if not operator or not operator.check_password(password):
-            return {"message": "Invalid username or password"
-                    }, 401
-        login_user(operator)
-
-        return {
-            "message": "Login successful",
-        }, 200
+        return auth_services.operator_login(args)
 
 user_auth_api.add_resource(UserSignUp, "/signup")
 user_auth_api.add_resource(VerifyEmail, "/verify-email")

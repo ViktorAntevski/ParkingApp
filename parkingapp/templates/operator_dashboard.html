@@ -1,5 +1,5 @@
 
-{% extends "base/dashboard.html" %}
+{% extends "base/operator_dashboard.html" %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -7,13 +7,14 @@
 
 <h2>Welcome, {{ user.username }}</h2>
 
-<a href="{{ url_for('/dashboard.inspect') }}">
-    <button>Hourly parking</button>
-</a><br><br>
+<a href="{{ url_for('operator_dashboard.inspect') }}">
+    <button>Inspect a vehicle</button>
+</a> <br><br>
 
 {% endblock %}
 
 {% block scripts %}
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   const msg = sessionStorage.getItem("toast");
 
@@ -28,4 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000); // 3 seconds
   }
 });
+</script>
 {% endblock %}
+

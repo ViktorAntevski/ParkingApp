@@ -11,7 +11,7 @@ def user_required(f):
         if not current_user.is_authenticated:
             abort(401)
         if not current_user.get_id().startswith("user:"):
-            abort(403)
+            return redirect(url_for("pages.login_page"))
         return f(*args, **kwargs)
 
     return wrapper
