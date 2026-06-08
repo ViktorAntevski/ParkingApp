@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, url_for, request, redirect
 from flask_login import current_user
 from parkingapp.models.models import EmailVerification, User
 from parkingapp import db
-from routes.api.user_API import send_email
+from parkingapp.auth.email_verification import send_email
 import secrets
 from datetime import datetime, timedelta
 

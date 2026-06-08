@@ -47,7 +47,6 @@ function login() {
         window.location.href = data.redirect;
       } else {
       document.getElementById("error").innerText = data.message;
-      showError(data.message);
       }
     return;
   }

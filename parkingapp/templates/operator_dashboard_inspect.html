@@ -1,27 +1,24 @@
-{% extends "base/dashboard.html" %}
+{% extends "base/operator_dashboard.html" %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
     <h2>Welcome, {{ user.username }}</h2>
 
-    <p>Provide us with your vehicles registration plates in the format "sk1234aa" or "SK1234AA" and the parking zone in the format "z1" or "Z1":</p>
+    <p>Enter the inspected vehicle registration plate:</p>
+
 
     <label>
-      Parking Zone<br>
-      <input type="text" id="parking_zone" required>
+        Vehicle Registration Plate<br>
+        <input type="text" id="plate" required>
     </label><br><br>
 
-    <label>
-        Vehicle Registration Plates<br>
-        <input type="text" id="plates" required>
-    </label><br><br>
-
-    <button type="button" onclick="submit()">Start Parking</button>
+    <button type="button" onclick="submit()">Check registration plate</button>
     <p id="error" style="color: red; font-weight: bold;"></p>
-<p>*Please acknowledge that you are responsible for providing the required information correctly</p>
+<p></p>
 
 {% endblock %}
+
 {% block scripts %}
     <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -40,24 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function submit() {
-  const parking_zone = document.getElementById("parking_zone").value.trim().toUpperCase();
-  const plates = document.getElementById("plates").value.trim().toUpperCase();
+  const plate = document.getElementById("plate").value.trim().toUpperCase();
   const errorEl = document.getElementById("error");
 
 
- if (!parking_zone || !plates) {
+ if (!plate) {
     errorEl.innerText = "Please fill in all fields.";
     return;
     }
 
-  fetch("/dashboard/api/hourly-parking", {
+  fetch("/operator/plate-check", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      parking_zone: parking_zone,
-      plates: plates
+      plate: plate
     })
   })
   .then(async response => {
@@ -65,7 +60,7 @@ function submit() {
 
 
  if (!response.ok) {
-      errorEl.innerText = data.message || "Failed to start parking.";
+      errorEl.innerText = data.message || "Query failed.";
       return;
       }
     sessionStorage.setItem("toast", data.message);

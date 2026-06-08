@@ -28,7 +28,7 @@ function register() {
   const plates = document.getElementById("plates").value;
   const zone = document.getElementById("zone").value;
 
-  fetch("/api-register-resident", {
+  fetch("/dashboard/api/register-resident", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
