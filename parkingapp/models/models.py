@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
-    password_hash = db.Column(db.String(100), nullable=False)
+    password_hash = db.Column(db.String(100), nullable=False, index=True)
     name_surname = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
@@ -98,8 +98,8 @@ class Guest(db.Model):
 
 class Operator(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    password_hash = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password_hash = db.Column(db.String(50), nullable=False, index=True)
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(password).decode("utf-8")

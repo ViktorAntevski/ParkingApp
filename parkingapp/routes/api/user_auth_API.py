@@ -36,7 +36,12 @@ class VerifyEmail(Resource):
 
         return auth_services.verify_email(token_received)
 
+class VerificationResend(Resource):
+    def post(self):
 
+        email = request.json.get("email")
+
+        return auth_services.resend(email)
 # LogIn
 login_parser = reqparse.RequestParser()
 login_parser.add_argument("username", type=str, required=True, help="Username required")
@@ -72,3 +77,4 @@ user_auth_api.add_resource(UserSignUp, "/signup")
 user_auth_api.add_resource(VerifyEmail, "/verify-email")
 user_auth_api.add_resource(UserLogin, "/login")
 user_auth_api.add_resource(UserLogout, "/logout")
+user_auth_api.add_resource(VerificationResend, "/verification-resend")

@@ -1,4 +1,4 @@
-from flask import flash, redirect, url_for, session
+from flask import flash, redirect, url_for, session, request
 from flask_login import login_user
 from parkingapp.extensions import db
 from parkingapp.models.models import User, EmailVerification, Operator
@@ -85,6 +85,31 @@ def verify_email(token_received):
 
     flash("Account is now verified, please log in again")
     return redirect("/login-page")
+
+def resend(email):
+
+    if not email or "@" not in email:
+        return {"message": "Please enter a valid e-mail"}, 400
+    token = secrets.token_urlsafe(32)
+    user = User.query.filter_by(email_address=email).first()
+    if not user:
+        return {"message": "The e-mail you entered is not the e-mail you submitted during sign-up"}, 400
+
+    now = datetime.utcnow()
+    if user.last_resend and now - user.last_resend < timedelta(seconds=60):
+        return {"message": "Try again in 1 minute"}
+    user.last_resend = now
+    verification = EmailVerification(
+        user_id=user.id,
+        token=token,
+        expires_at=datetime.utcnow() + timedelta(hours=24)
+    )
+    db.session.add(verification)
+    db.session.commit()
+    send_email(email, token)
+
+    return {"message": "Verification email sent"}, 200
+
 
 def user_login(args):
 

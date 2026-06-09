@@ -26,6 +26,7 @@ change_zone_parser = reqparse.RequestParser()
 change_zone_parser.add_argument("zone", type=str, required=True, help="Username required")
 
 class ChangeZone(Resource):
+    method_decorators = [login_required, operator_required]
     def post(self):
 
         args = change_zone_parser.parse_args()
