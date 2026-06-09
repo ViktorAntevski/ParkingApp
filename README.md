@@ -158,19 +158,23 @@ Client -> Nginx -> Gunicorn -> App -> Database
 _____________________FUTURE IMPROVEMENTS_____________________________________________________________________________________________________________
 
 Testing
+
 Asign unit tests
 Stress test with k6 for expected peak-hour requests rate 
 
 Observability and maintanence
+
 Hook Prometheus to montior: lathency, traffic, errors and resource usage.
 Add a crone job to clean unused data (invalid tokens, inactive users and others, inactive subscriptions)
 
 External services
+
 Connect the app to an external online payment service
 Connect the app to an external biometric verification service for verification of residents' data
 Send email notification for metering-in-progress reminders for hourly sessions and monthly subscriptions  
 
 Analytics
+
 Extend the db to store analytics such as occupied lot-hours, monthly revenue per zone, monthly revenue per service and other
 
 
