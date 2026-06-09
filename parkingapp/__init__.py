@@ -25,13 +25,13 @@ def create_app():
     register_user_loader(login_manager)
 
 
-    from routes.web.auth_web import pages
-    from routes.web.user_web import dashboard
-    from routes.web.operator_web import operator_dashboard
-    from routes.api.user_API import user_api_bp
-    from routes.api.operator_API import operator_api_bp
-    from routes.api.user_auth_API import user_auth_api_bp
-    from routes.api.operator_auth_API import operator_auth_api_bp
+    from parkingapp.routes.web.auth_web import pages
+    from parkingapp.routes.web.user_web import dashboard
+    from parkingapp.routes.web.operator_web import operator_dashboard
+    from parkingapp.routes.api.user_API import user_api_bp
+    from parkingapp.routes.api.operator_API import operator_api_bp
+    from parkingapp.routes.api.user_auth_API import user_auth_api_bp
+    from parkingapp.routes.api.operator_auth_API import operator_auth_api_bp
 
     app.register_blueprint(pages)
     app.register_blueprint(dashboard)
