@@ -2,15 +2,8 @@ from flask import url_for, redirect, Blueprint, request, flash
 from parkingapp.models.models import User, ActiveRegistrationPlate, HourlyParkingInvoice, EmailVerification, Resident
 from flask_restful import Resource,Api, reqparse
 from flask_login import login_user,logout_user,current_user,login_required
-from parkingapp import db
-from pricing.price_list import ZONE_RATES
-from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import secrets
-from flask_mail import Message
-import re
 from parkingapp.auth.auth_decorators import user_required, verified_required
-from parkingapp.services.input_validation import valid_plates, valid_parking_zone, duplicate_plates
 from parkingapp.services import user_services
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")

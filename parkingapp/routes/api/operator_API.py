@@ -1,10 +1,8 @@
 from flask import Flask, Blueprint, session
 from flask_restful import Resource, Api, reqparse
 from flask_login import login_required, login_user, logout_user
-from parkingapp import db
-from parkingapp.models.models import ActiveRegistrationPlate, Operator
 from parkingapp.auth.auth_decorators import operator_required
-from services import operator_services
+from parkingapp.services import operator_services
 
 operator_api_bp = Blueprint('operator_api', __name__)
 operator_api = Api(operator_api_bp)

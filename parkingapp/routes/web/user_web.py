@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from pricing.price_list import ZONE_RATES
-from routes.api.user_API import verified_required
+from parkingapp.pricing.price_list import ZONE_RATES
+from parkingapp.routes.api.user_API import verified_required
 from parkingapp.auth.user_loader import user_required
 
 dashboard = Blueprint("dashboard", __name__, url_prefix="/dashboard")
