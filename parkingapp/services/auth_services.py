@@ -43,6 +43,7 @@ def create_user(args):
     token = secrets.token_urlsafe(32)
     verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow() + timedelta(hours=24))
     try:
+
         send_email(user.email_address, token)
         db.session.add(verification)
         db.session.commit()
