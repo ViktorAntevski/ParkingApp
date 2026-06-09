@@ -1,31 +1,38 @@
 __________________________________ParkingApp (Initial release)_____________________________________________________________________________________
-
 line1
 
+line2
 Live demo: https://skopjeparking.duckdns.org
+line1
 
- line1 
+line2
 __________________________________QUICK START______________________________________________________________________________________________________
+line1
 
-line1 
-
+line2
 git clone https://github.com/ViktorAntevski/ParkingApp
 cd parkingapp
 pip install -r requirements.txt
 python app.py
-
 line1 
 
-line1 
+
+line2 
 ____________________________________STATUS__________________________________________________________________________________________________________
+line1
 
+line2
 - Educational project
 - Deployed prototype
 - Under active development
+line1
 
 
-____________________________________PURPOSE_________________________________________________________________________________________________________
+line2
+___________________________________PURPOSE_________________________________________________________________________________________________________
+line1
 
+line2
 The purpose of the web application is to provide backend logic that simulates a parking metering system. The system is split into two authentication domains,
 which provide functionality for two user groups: parking clients (hereafter “user base” or “users”) and operators.
 The authenticated users can use the following services:
@@ -33,18 +40,26 @@ The authenticated users can use the following services:
 -	Register a resident vehicle – residents who are eligible for a parking spot throughout the year, can register their vehicle as a resident’s vehicle in the system
 -	Monthly subscription – non-resident users can subscribe for a parking spot on a monthly basis
 The operators enforce the valid usage of the parking premises by “scanning” the parked vehicles’ registration plates and checking them against the data base of the system.
+line1
 
 
+line2
 ___________________________________FEATURES_________________________________________________________________________________________________________
+line1
 
+line2
 - User registration and authentication
 - Secure email verification using token-based links  
 - Role-based access (user/parking operator)
 - Parking services management and invoicing
+line1
 
 
-____________________________________MODELS__________________________________________________________________________________________________________
+line2
+___________________________________MODELS__________________________________________________________________________________________________________
+line1
 
+line2
 User – stores user data after successful signup. UserMixin inherited.  Two-way Relationship with EmailVerification.
 Columns “username” and “email_address” are unique and “password hash” is indexed(index).
 get_id method is overridden so that it includes a prefix “user:”.   
@@ -66,10 +81,14 @@ HourlyParkingInvoice – Stores check_in(check-in time) and vehicle_reg_plate (f
 MonthlySub – Stores payed for month(Boolean) and vehicle_reg_plate(foreign key of ActiveRegistrationPlate).  
 
 Resident – Stores registration_time, identity (indentity confirmed: boolean) and vehicle_reg_plate(foregin_key_of_ActiveRegistrationPlate)  
+line1
 
- 
+
+line2
 ____________________________SERVICES AND API ROUTES_________________________________________________________________________________________________
+line1
 
+line2
 Authentication (auth_service.{service}) ---------------------    
 
 create_user via the UserSignUp [post] route  
@@ -112,10 +131,14 @@ Parses the zone and plate input and queries ActiveRegistrationPlate. If found �
 
 change_zone via the ChangeZone [post] route    
 Changes the current working zone of the operator in the server-side session, stored under the key “operator_zone”.
+line1
 
 
+line2
 ___________________________TEMPLATES________________________________________________________________________________________________________________
+line1
 
+line2
 base/auth.html - pre-login template  
 base/dashboard.html - user's dashboard template - presents the user username and logout button(UserLogout route) through out the user session
 base/operator_dashboard.html - operator's dashboard template - presents the operator username, "logout" button(OperatorLogout route) through out the user session
@@ -132,19 +155,27 @@ the corresponding routes.
 decorated with: [login_required, operator_required]  
 operator_dashboard.html - provides the url links to all the operator services.
 operator service pages: operator_dashboard_inspect
+line1
 
 
+line2
 __________________________TECH STACK___________________________________________________________________________________________________________________
+line1
 
+line2
 - Backend: Python (Flask)
 - Database: SQLite
 - Server: Gunicorn
 - Web server: Nginx
 - Deployment: Ubuntu (Linux)
+line1
 
 
+line2
 _____________________DEPLOYMENT OVERVIEW_______________________________________________________________________________________________________________
+line1
 
+line2
 The application is deployed using:
 
 - Nginx as a reverse proxy forwarding requests to Gunicorn
@@ -157,10 +188,14 @@ Architecture:
 Client -> Nginx -> Gunicorn -> App -> Database
 
 **For further details, read deployment.md
+line1
 
 
+line2
 _____________________FUTURE IMPROVEMENTS_____________________________________________________________________________________________________________
+line1
 
+line2
 Testing
 
 Asign unit tests
@@ -180,7 +215,11 @@ External services
 Analytics
 
 -Extend the db to store analytics such as occupied lot-hours, monthly revenue per zone, monthly revenue per service and other
+line1
 
+
+
+line2
 
 
 
