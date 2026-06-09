@@ -102,11 +102,11 @@ Zone and plate arguments are parsed and checked against validation enforcement r
 
 Operator services (operator_service.service) -------------------------------------------------------------
 
-decorated with: [login_required, operator_required] 
-plate_check via the PlateCheck [post] route  
+decorated with: [login_required, operator_required]   
+plate_check via the PlateCheck [post] route    
 Parses the zone and plate input and queries ActiveRegistrationPlate. If found – {“message”: “OK”}, if not found: {“message”: “Fine the subject”}.
 
-change_zone via the ChangeZone [post] route  
+change_zone via the ChangeZone [post] route    
 Changes the current working zone of the operator in the server-side session, stored under the key “operator_zone”.
 
 
