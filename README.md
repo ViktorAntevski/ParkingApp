@@ -66,7 +66,7 @@ Resident – Stores registration_time, identity (indentity confirmed: boolean) a
  
 ____________________________SERVICES AND API ROUTES_________________________________________________________________________________________________
 
-----------------------Authentication (auth_service.{service}) ---------------------
+Authentication (auth_service.{service}) ---------------------
 
 create_user via the UserSignUp [post] route.
 The user signs up with a username, password, email address and other personal data. Rules regarding the content of the required fields are enforced here.
@@ -87,7 +87,7 @@ logout_user via UserLogout [post] route
 
 logout_user via OperatorLogout [post] route
 
-------------------------User services user_service.service) ----------------------------------------------------------------------
+User services user_service.service) ----------------------------------------------------------------------
 
 decorated with: [login_required, user_required, verified_required] 
 hourly_parking via the HourlyParking [post] route
@@ -100,7 +100,7 @@ Deletes the plates from ActiveRegistrationPlate.
 register_resident via the RegisterResident[post] route
 Zone and plate arguments are parsed and checked against validation enforcement rules. The input is stored in the ActiveRegistrationPlate and Resident tables.
 
-----------------------Operator services (operator_service.service) -------------------------------------------------------------
+Operator services (operator_service.service) -------------------------------------------------------------
 
 decorated with: [login_required, operator_required] 
 plate_check via the PlateCheck [post] route
