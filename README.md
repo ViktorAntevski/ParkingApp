@@ -7,7 +7,6 @@ Live demo: https://skopjeparking.duckdns.org
 
 __________________________________QUICK START______________________________________________________________________________________________________
 
-```bash
 git clone https://github.com/ViktorAntevski/ParkingApp
 cd parkingapp
 pip install -r requirements.txt
