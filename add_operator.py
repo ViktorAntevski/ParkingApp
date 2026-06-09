@@ -6,7 +6,7 @@ app = create_app()
 
 with app.app_context():
 
-    operator = Operator(username="Operator")
+    operator = Operator(username="operator")
     password = "operatoronduty123"
     operator.set_password(password)
 
