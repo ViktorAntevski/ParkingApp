@@ -8,10 +8,10 @@ Live demo: https://skopjeparking.duckdns.org
 __________________________________QUICK START______________________________________________________________________________________________________
 
 
-git clone https://github.com/ViktorAntevski/ParkingApp
-cd parkingapp
-pip install -r requirements.txt
-python app.py
+git clone https://github.com/ViktorAntevski/ParkingApp  
+cd parkingapp  
+pip install -r requirements.txt  
+python app.py  
 
 
 ____________________________________STATUS__________________________________________________________________________________________________________
@@ -26,7 +26,7 @@ ___________________________________PURPOSE______________________________________
 
 
 The purpose of the web application is to provide backend logic that simulates a parking metering system. The system is split into two authentication domains,
-which provide functionality for two user groups: parking clients (hereafter “user base” or “users”) and operators.
+which provide functionality for two user groups: parking clients (hereafter “user base” or “users”) and operators.  
 The authenticated users can use the following services:
 -	Hourly Parking – non-resident users can use a parking spot short term by applying for a parking metering session 
 -	Register a resident vehicle – residents who are eligible for a parking spot throughout the year, can register their vehicle as a resident’s vehicle in the system
