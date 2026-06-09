@@ -1,5 +1,3 @@
-from tkinter.constants import CASCADE
-
 from parkingapp import db
 from flask_login import UserMixin
 from datetime import datetime, timedelta
