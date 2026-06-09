@@ -1,6 +1,6 @@
 from flask import Flask
 from parkingapp.extensions import db, migrate, login_manager, bcrypt, mail
-from config import MailConfig
+from parkingapp.config import MailConfig
 from dotenv import load_dotenv
 import os
 
