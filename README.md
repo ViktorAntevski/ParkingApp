@@ -68,16 +68,16 @@ ____________________________SERVICES AND API ROUTES_____________________________
 
 Authentication (auth_service.{service}) ---------------------    
 
-create_user via the UserSignUp [post] route.  
+create_user via the UserSignUp [post] route  
 The user signs up with a username, password, email address and other personal data. Rules regarding the content of the required fields are enforced here.
 A verification link containing a 32-bit token is sent to the provided e-mail. After submitting successfully, a toast message is displayed.
 A user=User() is written in the db. A password hash is generated and stored using UserMixin methods.
 
-verify_email via the VerifyEmail [get] route.  
+verify_email via the VerifyEmail [get] route  
 Accessed through the e-mail verification link provided by the flask-mail module to a pending user. Upon success, a toast message is displayed to confirm that the user
 is successfully verified. User.is_verified is set to true. The verification state in the db for that user is deleted.
 
-resend via the VerificationResend [post] route.  
+resend via the VerificationResend [post] route  
 Sends another e-mail with a token-based link. The e-mail entered should be identical user's e-mail. A rate limit of 1 resend per minute is applied.
 
 user_login via the UserLogin [post] route  
