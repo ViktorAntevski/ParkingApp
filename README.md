@@ -1,18 +1,22 @@
 __________________________________ParkingApp (Initial release)_____________________________________________________________________________________
 
-
+line1
 
 Live demo: https://skopjeparking.duckdns.org
-  
-  
+
+ line1 
 __________________________________QUICK START______________________________________________________________________________________________________
+
+line1 
 
 git clone https://github.com/ViktorAntevski/ParkingApp
 cd parkingapp
 pip install -r requirements.txt
 python app.py
-   
-  
+
+line1 
+
+line1 
 ____________________________________STATUS__________________________________________________________________________________________________________
 
 - Educational project
