@@ -107,9 +107,12 @@ def resend(email):
     )
     db.session.add(verification)
     db.session.commit()
-    send_email(email, token)
-
-    return {"message": "Verification email sent"}, 200
+    try:
+        send_email(email, token)
+        return {"message": "Verification link was sent to your e-mail"}, 200
+    except Exception as e:
+        print("Email failed",e)
+        return {"message":"Verification link was not sent to your e-mail. Please use resend email"}
 
 
 def user_login(args):

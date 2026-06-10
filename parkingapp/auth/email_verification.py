@@ -1,26 +1,29 @@
-from parkingapp.extensions import mail
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from flask_mail import Message
+import os
 
 def send_email(to_email, token):
     verification_link = f"http://localhost:5000/verify-email?token={token}"
 
-    msg = Message(
+    msg = Mail(
+        from_email=os.getenv("MAIL_DEFAULT_SENDER"),
+        to_emails=to_email,
         subject="Verify your email",
-        sender = "vantevski1@gmail.com",
-        recipients=[to_email]
-    )
+        html_content = f"""
+<h2>Verify your account</h2>
+<p>Click the link below to verify your account:</p>
+<a href="{verification_link}">{verification_link}</a>
 
-    msg.body = f"""
-Hi,
-
-Please click the link below to verify your account:
-
-{verification_link}
-
-If you did not sign up, you can ignore this email.
+<p>If you did not sign up, you can ignore this email.</p>
 
 Best regards,
 ParkingApp Team
 """
-
-    mail.send(msg)
+    )
+    try:
+        sg=SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+        response = sg.send(msg)
+        print("Verification email sent. Please check your inbox (and spam folder if needed).",response.status_code)
+    except Exception as e:
+        print("SendGrid error:",e)
