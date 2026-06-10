@@ -82,6 +82,7 @@ def stop_hourly_parking(args):
         db.session.delete(active)
         db.session.delete(invoice)
         print(total_hours, total_invoice)
+        session.pop("plates", None)
         db.session.commit()
     except Exception:
         db.session.rollback()
