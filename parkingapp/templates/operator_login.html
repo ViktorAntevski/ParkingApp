@@ -34,6 +34,7 @@ function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
   const zone = document.getElementById("zone").value;
+  const errorEl = document.getElementById("error");
 
   fetch("/operator-login", {
     method: "POST",
@@ -52,9 +53,8 @@ function login() {
     if (!response.ok) {
       if (data.redirect) {
         window.location.href = data.redirect;
-      } else {
-      document.getElementById("error").innerText = data.message;
-      showError(data.message);
+    } else {
+      errorEl.innerText = data.message || "Login failed";
       }
     return;
   }

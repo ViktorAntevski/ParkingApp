@@ -5,6 +5,7 @@ from parkingapp import db
 from parkingapp.auth.email_verification import send_email
 import secrets
 from datetime import datetime, timedelta
+from parkingapp.auth.auth_decorators import user_required
 
 pages = Blueprint("pages", __name__)
 
@@ -21,7 +22,7 @@ def signup_page():
 
 @pages.route("/login-page", methods=["GET"])
 def login_page():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.get_id().startswith("user:"):
         if current_user.is_verified:
             return redirect(url_for("dashboard.dashboard_menu"))
         return redirect(url_for("pages.verify"))
