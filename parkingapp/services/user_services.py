@@ -5,6 +5,7 @@ from parkingapp.models.models import ActiveRegistrationPlate,HourlyParkingInvoic
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from parkingapp.pricing.price_list import ZONE_RATES
+from flask import session
 
 Skopje_TZ = ZoneInfo("Europe/Skopje")
 
@@ -29,7 +30,7 @@ def hourly_parking(args):
     parking = ActiveRegistrationPlate(user_id=user_id, vehicle_reg_plate=plates,registered_parking_zone=zone)
     invoice = HourlyParkingInvoice(user_id=user_id, vehicle_reg_plate=plates)
 
-
+    session["plates"] = plates
     db.session.add(parking)
     db.session.add(invoice)
     db.session.commit()
