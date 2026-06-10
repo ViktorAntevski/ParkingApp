@@ -7,6 +7,7 @@ import secrets
 from parkingapp.auth.email_verification import send_email
 from datetime import datetime, timedelta
 import traceback
+from parkingapp.services.input_validation import valid_parking_zone
 import re
 
 
@@ -147,6 +148,11 @@ def operator_login(args):
     if not operator or not operator.check_password(password):
         return {"message": "Invalid username or password"
                 }, 401
+
+
+    error=valid_parking_zone(zone)
+    if error:
+        return error
 
     login_user(operator)
     session["operator_zone"] = zone
