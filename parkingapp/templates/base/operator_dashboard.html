@@ -55,7 +55,9 @@
                 <span>
                     You are currently working in zone <strong>{{ session.get("operator_zone", "N/A") }}</strong><br><br>
                 </span>
-                <button onclick="change_zone()">Change zone</button>
+                <button onclick="Z1()">Z1</button>
+                <button onclick="Z2()">Z2</button>
+                <button onclick="Z3()">Z3</button>
             </div>
         </header>
 
@@ -87,6 +89,81 @@
                     alert("Server error during logout");
             }
         }
+            function Z1() {
+              fetch("/operator/change-zone", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  zone: "Z1",
+                })
+              })
+              .then(res => {return res.json().then(data => ({data, res}));
+              })
+              .then(({res,data}) => {
+                if (res.ok) {
+                  window.location.href = "/operator";
+                }
+                    else {
+                    alert(data.message);
+                    }
+                  })
+              .catch(err => {
+                 document.getElementById("error").innerText = "Server error";
+                 console.error(err);
+                 });
+                 }
+            function Z2() {
+              fetch("/operator/change-zone", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  zone: "Z2",
+                })
+              })
+              .then(res => {return res.json().then(data => ({data, res}));
+              })
+              .then(({res,data}) => {
+                if (res.ok) {
+                  window.location.href = "/operator";
+                }
+                    else {
+                    alert(data.message);
+                    }
+                  })
+              .catch(err => {
+                 document.getElementById("error").innerText = "Server error";
+                 console.error(err);
+                 });
+                 }
+            function Z3() {
+              fetch("/operator/change-zone", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  zone: "Z3",
+                })
+              })
+              .then(res => {return res.json().then(data => ({data, res}));
+              })
+              .then(({res,data}) => {
+                if (res.ok) {
+                  window.location.href = "/operator";
+                }
+                    else {
+                    alert(data.message);
+                    }
+                  })
+              .catch(err => {
+                 document.getElementById("error").innerText = "Server error";
+                 console.error(err);
+                 });
+                 }
         </script>
 
     </body>

@@ -4,8 +4,11 @@ from flask_mail import Message
 import os
 
 def send_email(to_email, token):
-    verification_link = f"http://127.0.0.1:5000/verify-email?token={token}"
-##//skopjeparking.duckdns.org
+    verification_link = f"https://skopjeparking.duckdns.org/verify-email?token={token}"
+
+##//https://skopjeparking.duckdns.org
+
+
     msg = Mail(
         from_email=os.getenv("MAIL_DEFAULT_SENDER"),
         to_emails=to_email,

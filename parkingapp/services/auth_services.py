@@ -44,21 +44,30 @@ def sign_up(args):
     token = secrets.token_urlsafe(32)
     verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow() + timedelta(hours=24))
 
+
     try:
-        send_email(user.email_address, token)
         db.session.add(verification)
         db.session.commit()
         login_user(user)
 
-        return {"message": "A verification link has been sent to your e-mail"
+    except Exception as e:
+        db.session.rollback()
+
+        return {"message": "An error occurred during sign-up, please try again"
+                }, 400
+
+    try:
+        send_email(user.email_address, token)
+
+        return {"message": "Sign-up successful. A verification link has been sent to your e-mail"
             }, 201
 
     except Exception as e:
-        db.session.rollback()
         print("Error during email:", e)
         traceback.print_exc()
-        return {"message": "Failed to send a verification link to your email"
-                }, 400
+##Soft failure An email link was not sent, outcome is degraded, but managable, the user can resend the link in the next page
+        return {"message": "Sign-up successful, but we couldn't send the verification email. Please click 'Resend email'."
+                }, 201
 
 def verify_email(token_received):
     pending_user = db.session.execute(

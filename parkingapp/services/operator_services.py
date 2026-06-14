@@ -3,7 +3,7 @@ from parkingapp.extensions import db
 from parkingapp.models.models import ActiveRegistrationPlate
 from parkingapp.pricing.price_list import ZONE_RATES
 import re
-from parkingapp.services.input_validation import valid_plates
+from parkingapp.services.input_validation import valid_parking_zone, valid_plates
 
 def plate_check(args):
 
@@ -33,14 +33,12 @@ def plate_check(args):
 
 
 
-valid_zones = {zone["zone"] for zone in ZONE_RATES}
-
 # Operator sets the zone he is currently checking
 def change_zone(args):
 
     zone = args["zone"].strip()
 
-    error = valid_plates(zone)
+    error = valid_parking_zone(zone)
     if error:
         return error
 

@@ -63,8 +63,7 @@ function submit() {
       errorEl.innerText = data.message || "Query failed.";
       return;
       }
-    sessionStorage.setItem("toast", data.message);
-    window.location.href = "/dashboard";
+    errorEl.innerText = data.message
     })
 .catch(err => {
     console.error(err);
