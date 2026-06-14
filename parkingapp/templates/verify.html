@@ -3,50 +3,52 @@
 {% block title %} Skopje Parking App{% endblock %}
 
 {% block content %}
-    <h2>Welcome</h2>
+    <h2>E-mail verification step</h2>
 
+
+
+<p>
+  A verification link has been sent to {{ email }}
+</p>
+
+<br> </br>
     <p>
-        <label>Email:<br>
-  <input type="email" id="email_address">
-        </label><br><br>
+        <label>if you didn't receive an email, click here:<br>
+        </label><br>
         <button onclick="resend()">Resend link</button>
     </p>
+
 {% endblock %}
 
 
 {% block scripts %}
 <script>
+    console.log("SCRIPT RUNNING");
+
     function resend() {
         console.log("Resend Clicked");
-        console.log(document.getElementById("email_address"));
-        fetch ("/verification-resend",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: document.getElementById("email_address").value
-            })
+
+        fetch("/verification-resend", {
+            method: "POST"
         })
         .then(res => res.json())
-        .then(data => alert(data.message))
+        .then(data => {
+            alert(data.message);
+        })
         .catch(err => console.error(err));
-    }
+}
 
+const email = "{{ current_user.email_address | default('') }}";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const msg = sessionStorage.getItem("toast");
+  const el = document.getElementById("email-msg");
 
-  if (msg) {
-    const toast = document.getElementById("toast");
-    toast.innerText = msg;
-    toast.style.display = "block";
-
-    setTimeout(() => {
-      toast.style.display = "none";
-      sessionStorage.removeItem("toast");
-    }, 3000); // 3 seconds
+  if (email) {
+    el.innerText = `A verification link has been sent to ${email}`;
+  } else {
+    el.innerText = "A verification link has been sent to your email";
   }
 });
+
 </script>
 {% endblock %}

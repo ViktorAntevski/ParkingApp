@@ -59,8 +59,6 @@ function signUp() {
   .then(({res,data}) => {
     if (res.ok) {
       sessionStorage.setItem("toast", data.message);
-      localStorage.setItem("user_id", data.id);
-      localStorage.setItem("email", data.email);
       window.location.href = "/verification-required";
       document.getElementById("error").innerText = data.message;
     }

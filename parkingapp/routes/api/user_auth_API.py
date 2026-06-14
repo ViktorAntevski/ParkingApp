@@ -1,5 +1,5 @@
 from flask import request, flash, redirect, url_for, Blueprint
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 from flask_restful import Resource, Api, reqparse
 from parkingapp.extensions import db
 from parkingapp.models.models import User, EmailVerification, Operator
@@ -7,6 +7,7 @@ import secrets
 from parkingapp.auth.email_verification import send_email
 from datetime import datetime, timedelta
 from parkingapp.services import auth_services
+from parkingapp.auth.auth_decorators import user_required
 
 user_auth_api_bp = Blueprint('user_auth', __name__)
 user_auth_api = Api(user_auth_api_bp)
@@ -27,7 +28,7 @@ class UserSignUp(Resource):
 
         args = add_user.parse_args()
 
-        return auth_services.create_user(args)
+        return auth_services.sign_up(args)
 
 class VerifyEmail(Resource):
     def get(self):
@@ -37,11 +38,10 @@ class VerifyEmail(Resource):
         return auth_services.verify_email(token_received)
 
 class VerificationResend(Resource):
+    method_decorators = [login_required, user_required]
     def post(self):
 
-        email = request.json.get("email")
-
-        return auth_services.resend(email)
+        return auth_services.resend_ver()
 # LogIn
 login_parser = reqparse.RequestParser()
 login_parser.add_argument("username", type=str, required=True, help="Username required")

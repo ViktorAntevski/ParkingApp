@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect
-from flask_login import current_user
+from flask_login import current_user, login_required
 from parkingapp.models.models import EmailVerification, User
 from parkingapp import db
 from parkingapp.auth.email_verification import send_email
@@ -35,10 +35,10 @@ def operator_login_page():
         return redirect(url_for("operator_dashboard.dashboard_menu"))
     return render_template("operator_login.html")
 
-
+@login_required
 @pages.route("/verification-required", methods=["GET"])
 def verify():
-    return render_template("verify.html")
+    return render_template("verify.html", email=current_user.email_address)
 
 
 @pages.route("/verify-email1", methods=["GET"])

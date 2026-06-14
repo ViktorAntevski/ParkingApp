@@ -1,5 +1,5 @@
 from flask import flash, redirect, url_for, session, request
-from flask_login import login_user
+from flask_login import login_user, current_user
 from parkingapp.extensions import db
 from parkingapp.models.models import User, EmailVerification, Operator
 from flask_restful import reqparse
@@ -11,7 +11,7 @@ from parkingapp.services.input_validation import valid_parking_zone
 import re
 
 
-def create_user(args):
+def sign_up(args):
 
     password = args["password"].strip()
     username = args["username"].strip()
@@ -43,18 +43,17 @@ def create_user(args):
     ##email verification###
     token = secrets.token_urlsafe(32)
     verification = EmailVerification(user_id=user.id, token=token, expires_at=datetime.utcnow() + timedelta(hours=24))
-    try:
 
+    try:
         send_email(user.email_address, token)
         db.session.add(verification)
         db.session.commit()
+        login_user(user)
 
-        return {"message": "A verification link has been sent to your e-mail", "user_id": user.id,
-            "email": user.email_address
+        return {"message": "A verification link has been sent to your e-mail"
             }, 201
 
     except Exception as e:
-
         db.session.rollback()
         print("Error during email:", e)
         traceback.print_exc()
@@ -88,19 +87,19 @@ def verify_email(token_received):
     flash("Account is now verified, please log in again")
     return redirect("/login-page")
 
-def resend(email):
+def resend_ver():
 
-    if not email or "@" not in email:
-        return {"message": "Please enter a valid e-mail"}, 400
-    token = secrets.token_urlsafe(32)
-    user = User.query.filter_by(email_address=email).first()
+    user = current_user
     if not user:
-        return {"message": "The e-mail you entered is not the e-mail you submitted during sign-up"}, 400
+        return {"message": "Please try to log-in again"}, 400
 
     now = datetime.utcnow()
     if user.last_resend and now - user.last_resend < timedelta(seconds=60):
         return {"message": "Try again in 1 minute"}
     user.last_resend = now
+    email = user.email_address
+    token = secrets.token_urlsafe(32)
+
     verification = EmailVerification(
         user_id=user.id,
         token=token,
@@ -110,10 +109,10 @@ def resend(email):
     db.session.commit()
     try:
         send_email(email, token)
-        return {"message": "Verification link was sent to your e-mail"}, 200
+        return {"message": f"Verification link was sent to {email}"}, 200
     except Exception as e:
         print("Email failed",e)
-        return {"message":"Verification link was not sent to your e-mail. Please use resend email"}
+        return {"message":"Verification link was not sent to your e-mail. Please try again later"}
 
 
 def user_login(args):
@@ -126,6 +125,7 @@ def user_login(args):
         return {"message": "Invalid username or password"
                 }, 401
     if not user.is_verified:
+        login_user(user)
         return {
             "message": "Account not verified",
             "redirect": url_for("pages.verify")
