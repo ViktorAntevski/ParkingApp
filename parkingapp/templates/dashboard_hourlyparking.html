@@ -17,7 +17,7 @@
         <input type="text" id="plates" required>
     </label><br><br>
 
-    <button type="button" onclick="submit()">Start Parking</button>
+    <button type="button" onclick="start_parking()">Start Parking</button>
     <p id="error" style="color: red; font-weight: bold;"></p>
 <p>*Please acknowledge that you are responsible for providing the required information correctly</p>
 
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function submit() {
+function start_parking() {
   const parking_zone = document.getElementById("parking_zone").value.trim().toUpperCase();
   const plates = document.getElementById("plates").value.trim().toUpperCase();
   const errorEl = document.getElementById("error");
@@ -50,7 +50,7 @@ function submit() {
     return;
     }
 
-  fetch("/dashboard/api/hourly-parking", {
+  fetch("/dashboard/api/hourly-parking-start", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -68,8 +68,9 @@ function submit() {
       errorEl.innerText = data.message || "Failed to start parking.";
       return;
       }
-    sessionStorage.setItem("toast", data.message);
-    window.location.href = "/dashboard";
+      errorEl.innerText = "Redirecting to payment...";
+
+      window.location.href = data.checkout_url;
     })
 .catch(err => {
     console.error(err);

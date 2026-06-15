@@ -7,6 +7,8 @@ VALID_ZONES = {zone["zone"] for zone in ZONE_RATES}
 
 
 def valid_parking_zone(zone):
+
+    zone=zone.upper()
     if zone not in VALID_ZONES:
         return {"message": "Incorrect parking zone"
                 }, 400

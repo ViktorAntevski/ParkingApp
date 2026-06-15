@@ -64,6 +64,10 @@ class HourlyParkingInvoice(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     check_in = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(Skopje_TZ), nullable=False)
     vehicle_reg_plate = db.Column(db.String(20), db.ForeignKey("active_users.vehicle_reg_plate", ondelete ="CASCADE"), unique=True, nullable=False)
+    payment_intent_id = db.Column(db.String, nullable=True)
+    payment_status = db.Column(db.String, default="pending")
+
+
 
 
 

@@ -16,14 +16,23 @@ start_hourly_metering = reqparse.RequestParser()
 start_hourly_metering.add_argument("plates", type=str, required=True, help="insert your vehicle plates")
 start_hourly_metering.add_argument("parking_zone", type=str, required=True, help="insert your parking zone")
 
-class HourlyParking(Resource):
+
+#### Hourly parking
+
+class StartHourlyParking(Resource):
     method_decorators = [login_required, user_required, verified_required]
 
     def post(self):
 
         args = start_hourly_metering.parse_args()
 
-        return user_services.hourly_parking(args)
+        return user_services.parking_start(args)
+
+class FinalizeHourlyParking(Resource):
+
+    def get(self):
+
+        return user_services.parking_finalize()
 
 
 stop_hourly_metering = reqparse.RequestParser()
@@ -37,6 +46,8 @@ class StopHourlyParking(Resource):
         args = stop_hourly_metering.parse_args()
 
         return user_services.stop_hourly_parking(args)
+
+#######
 
 add_resident = reqparse.RequestParser()
 add_resident.add_argument("plates", type = str, required = True, help="Please provide your plates number", location="json")
@@ -58,6 +69,7 @@ class MonthlySub(Resource):
 
 
 
-user_api.add_resource(HourlyParking, "/dashboard/api/hourly-parking")
+user_api.add_resource(StartHourlyParking, "/dashboard/api/hourly-parking-start")
+user_api.add_resource(FinalizeHourlyParking, "/dashboard/api/hourly-parking-success")
 user_api.add_resource(StopHourlyParking, "/dashboard/api/stop-hourly-parking")
 user_api.add_resource(RegisterResident, "/dashboard/api/register-resident")

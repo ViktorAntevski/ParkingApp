@@ -1,5 +1,5 @@
 from flask import Flask
-from parkingapp.extensions import db, migrate, login_manager, bcrypt, mail
+from parkingapp.extensions import db, migrate, login_manager, bcrypt, mail, init_stripe
 from parkingapp.config import MailConfig
 from dotenv import load_dotenv
 import os
@@ -19,6 +19,7 @@ def create_app():
     bcrypt.init_app(app)
     mail.init_app(app)
     migrate.init_app(app, db)
+    init_stripe()
 
     from parkingapp.auth.user_loader import register_user_loader
 

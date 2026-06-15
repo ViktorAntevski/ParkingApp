@@ -4,11 +4,16 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
+import stripe
+from config import StripeConfig
 
 login_manager = LoginManager()
 mail = Mail()
 bcrypt = Bcrypt()
 migrate=Migrate()
+
+def init_stripe():
+    stripe.api_key = StripeConfig.STRIPE_SECRET_KEY
 
 convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -20,3 +25,4 @@ convention = {
 
 db_metadata = MetaData(naming_convention=convention)
 db = SQLAlchemy(metadata=db_metadata)
+
