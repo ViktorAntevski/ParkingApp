@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 import stripe
-from config import StripeConfig
+from parkingapp.config import StripeConfig
 
 login_manager = LoginManager()
 mail = Mail()
